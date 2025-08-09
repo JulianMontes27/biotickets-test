@@ -17,6 +17,10 @@ module.exports = {
   		}
   	},
   	extend: {
+  		fontFamily: {
+  			'space': ['var(--font-space-grotesk)', 'sans-serif'],
+  			'mono': ['var(--font-jetbrains-mono)', 'monospace'],
+  		},
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
