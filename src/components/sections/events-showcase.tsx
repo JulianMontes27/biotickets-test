@@ -25,17 +25,15 @@ export default function EventsShowcase() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const formatted = date.toLocaleDateString('es-ES', { 
-      month: 'short', 
-      day: 'numeric'
-    }).toUpperCase();
+    const monthNames = {
+      0: 'ENE', 1: 'FEB', 2: 'MAR', 3: 'ABR', 4: 'MAY', 5: 'JUN',
+      6: 'JUL', 7: 'AGO', 8: 'SEP', 9: 'OCT', 10: 'NOV', 11: 'DIC'
+    };
     
-    // Limitar mes a máximo 3 letras
-    const parts = formatted.split(' ');
-    if (parts[0]) {
-      parts[0] = parts[0].substring(0, 3);
-    }
-    return parts.join(' ');
+    const month = monthNames[date.getMonth() as keyof typeof monthNames];
+    const day = date.getDate();
+    
+    return `${month} ${day}`;
   };
 
   const formatPrice = (price: number) => {
@@ -73,7 +71,7 @@ export default function EventsShowcase() {
           <div className="text-xl font-bold text-[#FFD60A]">
             {formatDate(event.date).split(' ')[1]}
           </div>
-          <div className="text-[8px] font-medium text-zinc-400 leading-tight">
+          <div className="text-[10px] font-medium text-zinc-400 leading-tight">
             {formatDate(event.date).split(' ')[0]}
           </div>
         </div>
