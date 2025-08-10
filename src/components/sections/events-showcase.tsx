@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { upcomingEvents, pastEvents } from "@/data/events";
 import { Event } from "@/types";
 
@@ -46,7 +46,7 @@ export default function EventsShowcase() {
 
   const currentEvents = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
 
-  const EventCard = ({ event, index }: { event: Event; index: number }) => (
+  const EventCard = ({ event }: { event: Event }) => (
     <div
       className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 h-full"
       onMouseEnter={() => setHoveredCard(event.id)}
@@ -116,24 +116,24 @@ export default function EventsShowcase() {
   );
 
   return (
-    <section className="py-24 bg-black">
-      <div className="container mx-auto px-4">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-black overflow-hidden">
+      <div className="container mx-auto px-4 max-w-full">
         {/* Section Header */}
-        <div className="max-w-2xl mb-20">
-          <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[0.9] tracking-tight">
+        <div className="max-w-2xl mb-10 sm:mb-12 md:mb-16 lg:mb-20">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-[0.9] tracking-tight">
             Próximos <span className="text-[#FFD60A]">Eventos</span>
           </h2>
-          <p className="text-xl text-zinc-400 leading-relaxed tracking-wide font-light">
+          <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed tracking-wide font-light">
             Descubre los mejores eventos musicales y culturales de la ciudad.
           </p>
         </div>
 
         {/* Tabs with Navigation Buttons */}
-        <div className="flex justify-between items-end mb-16 border-b border-zinc-800">
-          <div className="flex gap-12">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 sm:mb-12 md:mb-16 border-b border-zinc-800">
+          <div className="flex gap-6 sm:gap-8 md:gap-12 mb-4 sm:mb-0">
             <button
               onClick={() => setActiveTab('upcoming')}
-              className={`pb-6 px-2 text-sm font-bold transition-all duration-300 tracking-[0.2em] leading-none ${
+              className={`pb-4 sm:pb-6 px-1 sm:px-2 text-xs sm:text-sm font-bold transition-all duration-300 tracking-[0.15em] sm:tracking-[0.2em] leading-none ${
                 activeTab === 'upcoming'
                   ? 'text-[#FFD60A] border-b-2 border-[#FFD60A]'
                   : 'text-zinc-500 hover:text-zinc-300'
@@ -144,7 +144,7 @@ export default function EventsShowcase() {
             
             <button
               onClick={() => setActiveTab('past')}
-              className={`pb-6 px-2 text-sm font-bold transition-all duration-300 tracking-[0.2em] leading-none ${
+              className={`pb-4 sm:pb-6 px-1 sm:px-2 text-xs sm:text-sm font-bold transition-all duration-300 tracking-[0.15em] sm:tracking-[0.2em] leading-none ${
                 activeTab === 'past'
                   ? 'text-[#FFD60A] border-b-2 border-[#FFD60A]'
                   : 'text-zinc-500 hover:text-zinc-300'
@@ -155,18 +155,18 @@ export default function EventsShowcase() {
           </div>
           
           {/* Navigation Buttons */}
-          <div className="flex gap-4 pb-6">
+          <div className="flex gap-2 sm:gap-4 pb-4 sm:pb-6">
             <button
               onClick={scrollLeft}
-              className="p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-[#FFD60A] hover:border-[#FFD60A]/40 transition-all duration-300"
+              className="p-2 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-[#FFD60A] hover:border-[#FFD60A]/40 transition-all duration-300"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={scrollRight}
-              className="p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-[#FFD60A] hover:border-[#FFD60A]/40 transition-all duration-300"
+              className="p-2 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-[#FFD60A] hover:border-[#FFD60A]/40 transition-all duration-300"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} className="sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
@@ -176,31 +176,31 @@ export default function EventsShowcase() {
           {/* Carousel Container */}
           <div 
             ref={scrollRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide py-8"
+            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-4 sm:py-6 md:py-8"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             }}
           >
-            {currentEvents.map((event, index) => (
-              <div key={event.id} className="flex-shrink-0 w-80">
-                <EventCard event={event} index={index} />
+            {currentEvents.map((event) => (
+              <div key={event.id} className="flex-shrink-0 w-72 sm:w-80">
+                <EventCard event={event} />
               </div>
             ))}
           </div>
         </div>
 
         {/* CTA Button */}
-        <div className="flex justify-center mt-16">
+        <div className="flex justify-center mt-8 sm:mt-12 md:mt-16">
           <button 
-            className="group px-8 py-4 bg-[#FFD60A] text-black font-medium transition-all duration-300 rounded-full shadow-lg hover:bg-[#FFCC00]"
+            className="group px-6 sm:px-8 py-3 sm:py-4 bg-[#FFD60A] text-black text-sm sm:text-base font-medium transition-all duration-300 rounded-full shadow-lg hover:bg-[#FFCC00]"
             style={{
               boxShadow: '0 10px 30px rgba(255, 214, 10, 0.3)'
             }}
           >
             <span className="flex items-center gap-2">
               Ver Todos los Eventos
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={16} />
             </span>
           </button>
         </div>

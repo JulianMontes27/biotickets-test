@@ -52,7 +52,7 @@ export default function RootLayout({
   const websiteSchema = generateWebsiteSchema();
 
   return (
-    <html lang="es">
+    <html lang="es" className="overflow-x-hidden">
       <head>
         <script
           type="application/ld+json"
@@ -67,9 +67,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}>
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased overflow-x-hidden`}>
         <Header />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen overflow-x-hidden">{children}</main>
         <Footer />
       </body>
     </html>

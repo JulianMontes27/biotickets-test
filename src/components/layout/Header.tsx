@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,31 +59,31 @@ export default function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-black/95 border-t border-zinc-800/50">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-md border-b border-zinc-800/50 max-w-full overflow-hidden">
+            <div className="px-4 py-4 space-y-2 max-w-full">
               <a 
                 href="#eventos" 
-                className="block px-3 py-2 text-white/70 hover:text-[#FFD60A] transition-colors"
+                className="block px-4 py-3 text-white/70 hover:text-[#FFD60A] hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
                 onClick={toggleMenu}
               >
                 Eventos
               </a>
               <a 
                 href="#wallet" 
-                className="block px-3 py-2 text-white/70 hover:text-[#FFD60A] transition-colors"
+                className="block px-4 py-3 text-white/70 hover:text-[#FFD60A] hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
                 onClick={toggleMenu}
               >
                 Apple Wallet
               </a>
               <a 
                 href="#nosotros" 
-                className="block px-3 py-2 text-white/70 hover:text-[#FFD60A] transition-colors"
+                className="block px-4 py-3 text-white/70 hover:text-[#FFD60A] hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
                 onClick={toggleMenu}
               >
                 Nosotros
               </a>
-              <div className="px-3 py-2">
-                <button className="w-full px-6 py-2 bg-[#FFD60A]/10 backdrop-blur-sm border border-[#FFD60A]/20 rounded-full text-[#FFD60A] font-medium text-sm transition-all duration-300 hover:bg-[#FFD60A]/20 hover:border-[#FFD60A]/40">
+              <div className="pt-2 mt-2 border-t border-zinc-800/50">
+                <button className="w-full px-6 py-3 bg-[#FFD60A]/10 backdrop-blur-sm border border-[#FFD60A]/20 rounded-full text-[#FFD60A] font-medium text-sm transition-all duration-300 hover:bg-[#FFD60A]/20 hover:border-[#FFD60A]/40">
                   Iniciar Sesión
                 </button>
               </div>
