@@ -25,13 +25,6 @@ export default function HeroSection() {
     loadHeroBanner();
   }, []);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
 
   // Si estamos cargando, mostrar un estado de carga
   if (loading) {

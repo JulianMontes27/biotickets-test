@@ -33,7 +33,7 @@ export interface WordPressEvent {
   template: string;
   format: string;
   meta?: {
-    [key: string]: any; // Hacer meta opcional y flexible
+    [key: string]: unknown; // Hacer meta opcional y flexible
     _tribe_featured?: boolean;
     _tribe_events_start_date?: string;
     _tribe_events_end_date?: string;
@@ -152,7 +152,7 @@ export interface TribeEvent {
     currency_symbol: string;
     currency_code: string;
     currency_position: string;
-    values: any[];
+    values: unknown[];
   };
   website: string;
   show_map: boolean;
@@ -197,7 +197,7 @@ export interface TribeEvent {
     global_id: string;
     global_id_lineage: string[];
   };
-  organizer: any[];
+  organizer: unknown[];
 }
 
 class WordPressAPI {

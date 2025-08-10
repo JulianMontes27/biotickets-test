@@ -47,7 +47,7 @@ export async function getPastEvents(): Promise<Event[]> {
 
   try {
     console.log('🔄 Fetching past events from Tribe Events API...');
-    const tribeEvents = await tribeEventsAdapter.getPastEvents(12);
+    const tribeEvents = await tribeEventsAdapter.getPastEvents(50);
     
     console.log(`📊 Tribe Events past events found: ${tribeEvents.length}`);
     pastEventsCache = tribeEvents;

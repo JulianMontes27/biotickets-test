@@ -19,7 +19,7 @@ export default function ArtistTracker() {
     if (isMobile) {
       // Animación loop sutil para móvil
       let animationId: number;
-      let startTime = Date.now();
+      const startTime = Date.now();
       
       const animatePhone = () => {
         if (!phoneRef.current) return;

@@ -1,5 +1,5 @@
 import { Event } from '@/types';
-import { WordPressEvent, WordPressVenue, WordPressOrganizer, wordpressAPI } from './wordpress-api';
+import { WordPressEvent, wordpressAPI } from './wordpress-api';
 
 export class EventsAdapter {
   private stripHtml(html: string): string {
@@ -42,7 +42,7 @@ export class EventsAdapter {
     });
   }
 
-  private formatPrice(cost: string, symbol: string = '$'): number {
+  private formatPrice(cost: string, _symbol: string = '$'): number {
     if (!cost || cost === '0' || cost.toLowerCase() === 'gratis' || cost.toLowerCase() === 'free') {
       return 0;
     }
@@ -104,7 +104,7 @@ export class EventsAdapter {
       const venue = await wordpressAPI.getVenue(venueId);
       if (venue) {
         const venueName = this.stripHtml(venue.title.rendered);
-        const address = venue.meta._VenueAddress;
+        const _address = venue.meta._VenueAddress;
         const city = venue.meta._VenueCity;
         
         if (city) {
@@ -389,7 +389,7 @@ export class EventsAdapter {
   }
 
   // Método para obtener eventos pasados convertidos
-  async getPastEvents(limit: number = 12): Promise<Event[]> {
+  async getPastEvents(limit: number = 50): Promise<Event[]> {
     try {
       // Obtener eventos pasados específicos de WordPress
       const wpEvents = await wordpressAPI.getPastEvents(limit);
