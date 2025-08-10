@@ -1,52 +1,96 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export default function ArtistTracker() {
   const phoneRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!phoneRef.current) return;
-
-      const phone = phoneRef.current;
-      const rect = phone.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      const deltaX = e.clientX - centerX;
-      const deltaY = e.clientY - centerY;
-
-      const maxRotation = 15;
-      const rotateX = (deltaY / window.innerHeight) * maxRotation * -1;
-      const rotateY = (deltaX / window.innerWidth) * maxRotation;
-
-      phone.style.transform = `
-        perspective(1000px) 
-        rotateX(${rotateX}deg) 
-        rotateY(${rotateY}deg) 
-        translateZ(50px)
-      `;
+    // Detectar si es dispositivo móvil
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024; // lg breakpoint
+      setIsMobile(mobile);
     };
 
-    const handleMouseLeave = () => {
-      if (!phoneRef.current) return;
-      phoneRef.current.style.transform = `
-        perspective(1000px) 
-        rotateX(0deg) 
-        rotateY(0deg) 
-        translateZ(0px)
-      `;
-    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseleave', handleMouseLeave);
+    if (isMobile) {
+      // Animación loop sutil para móvil
+      let animationId: number;
+      let startTime = Date.now();
+      
+      const animatePhone = () => {
+        if (!phoneRef.current) return;
+        
+        const elapsed = (Date.now() - startTime) / 1000; // en segundos
+        const rotateY = Math.sin(elapsed * 1.2) * 6; // Oscila entre -6 y 6 grados (más rápido y amplio)
+        const rotateX = Math.cos(elapsed * 0.8) * 4; // Oscila entre -4 y 4 grados (más rápido y amplio)
+        const translateY = Math.sin(elapsed * 1.0) * 4; // Movimiento vertical más pronunciado
+        
+        phoneRef.current.style.transform = `
+          perspective(1000px) 
+          rotateX(${rotateX}deg) 
+          rotateY(${rotateY}deg) 
+          translateY(${translateY}px)
+          translateZ(10px)
+        `;
+        
+        animationId = requestAnimationFrame(animatePhone);
+      };
+      
+      animatePhone();
+      
+      return () => {
+        cancelAnimationFrame(animationId);
+        window.removeEventListener('resize', checkMobile);
+      };
+    } else {
+      // Efecto cursor para desktop
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!phoneRef.current) return;
 
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
+        const phone = phoneRef.current;
+        const rect = phone.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const deltaX = e.clientX - centerX;
+        const deltaY = e.clientY - centerY;
+
+        const maxRotation = 15;
+        const rotateX = (deltaY / window.innerHeight) * maxRotation * -1;
+        const rotateY = (deltaX / window.innerWidth) * maxRotation;
+
+        phone.style.transform = `
+          perspective(1000px) 
+          rotateX(${rotateX}deg) 
+          rotateY(${rotateY}deg) 
+          translateZ(50px)
+        `;
+      };
+
+      const handleMouseLeave = () => {
+        if (!phoneRef.current) return;
+        phoneRef.current.style.transform = `
+          perspective(1000px) 
+          rotateX(0deg) 
+          rotateY(0deg) 
+          translateZ(0px)
+        `;
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseleave', handleMouseLeave);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseleave', handleMouseLeave);
+        window.removeEventListener('resize', checkMobile);
+      };
+    }
+  }, [isMobile]);
   const features = [
     {
       id: "wallet",
@@ -188,7 +232,7 @@ export default function ArtistTracker() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 md:gap-20 lg:gap-24 xl:gap-32 items-center">
           {/* Left Content */}
-          <div className="space-y-8 sm:space-y-10 lg:space-y-12 xl:space-y-16 order-2 lg:order-1">
+          <div className="space-y-8 sm:space-y-10 lg:space-y-12 xl:space-y-16 order-1 lg:order-1">
             <div className="space-y-6 sm:space-y-8">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[0.9] tracking-tight">
                 <span className="text-white">Entrada </span>
@@ -219,7 +263,7 @@ export default function ArtistTracker() {
           </div>
 
           {/* Right Content - Apple Wallet Mockup */}
-          <div className="relative order-1 lg:order-2" style={{ perspective: "1000px" }}>
+          <div className="relative order-2 lg:order-2" style={{ perspective: "1000px" }}>
             <div className="relative mx-auto max-w-xs sm:max-w-sm">
               {/* Phone Frame with 3D effect */}
               <div 

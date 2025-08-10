@@ -1,13 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, ChevronDown } from "lucide-react";
-import { upcomingEvents } from "@/data/events";
+import { ArrowRight, ChevronDown, Loader2 } from "lucide-react";
+import { heroBannerService, HeroBanner } from "@/services/hero-banner-service";
 
 export default function HeroSection() {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const mainEvent = upcomingEvents[0]; // Evento principal
+  const [heroBanner, setHeroBanner] = useState<HeroBanner | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHeroBanner = async () => {
+      try {
+        const banner = await heroBannerService.getMainHeroBanner();
+        setHeroBanner(banner);
+      } catch (error) {
+        console.error('Error loading hero banner:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHeroBanner();
+  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -17,13 +33,28 @@ export default function HeroSection() {
     }).format(price);
   };
 
+  // Si estamos cargando, mostrar un estado de carga
+  if (loading) {
+    return (
+      <section className="relative h-screen max-w-full bg-black overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
+        <div className="relative z-10 h-full flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="animate-spin mx-auto mb-4 text-indigo-400" size={48} />
+            <p className="text-white text-xl">Cargando banner principal...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="relative h-screen max-w-full bg-black overflow-hidden">
       {/* Full Screen Image */}
       <div className="absolute inset-0">
         <Image
-          src={mainEvent?.image || "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3"}
-          alt={mainEvent?.title || "Event"}
+          src={heroBanner?.imageUrl || "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3"}
+          alt={heroBanner?.title || "BioTickets Banner"}
           fill
           className={`object-cover transition-opacity duration-1000 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}
@@ -42,31 +73,27 @@ export default function HeroSection() {
 
         {/* Main Content - Bottom Positioned */}
         <div className="container mx-auto px-4">
-          {/* Event Category */}
+          {/* Brand Category */}
           <div className="mb-4 sm:mb-6">
             <span className="text-white/50 text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase leading-relaxed">
-              {"Evento Principal"}
+              {"Vive la música"}
             </span>
           </div>
 
           {/* Main Title */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[0.9] tracking-tight">
-            <span className="text-white">{(mainEvent?.title || "FESTIVAL ÉPICO").split(' ').slice(0, -1).join(' ')} </span>
-            <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">{(mainEvent?.title || "FESTIVAL ÉPICO 2024").split(' ').slice(-1)[0]}</span>
+            <span className="text-white">Los mejores eventos de </span>
+            <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Colombia</span>
           </h1>
 
-          {/* Event Details - Minimal */}
+          {/* Description */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-6 text-white/70 mb-6 sm:mb-8">
             <span className="text-sm sm:text-base font-medium tracking-wide">
-              {mainEvent?.date || "2024-09-15"}
+              Descubre conciertos únicos
             </span>
             <span className="hidden sm:inline text-white/30">•</span>
             <span className="text-sm sm:text-base font-medium tracking-wide">
-              {mainEvent?.venue || "Bogotá, Colombia"}
-            </span>
-            <span className="hidden sm:inline text-white/30">•</span>
-            <span className="text-sm sm:text-base font-semibold tracking-wide">
-              Desde {formatPrice(mainEvent?.ticketPrice || 0)}
+              Experiencias inolvidables
             </span>
           </div>
 

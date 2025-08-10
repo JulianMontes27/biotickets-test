@@ -1,15 +1,44 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { upcomingEvents, pastEvents } from "@/data/events";
+import { MapPin, ArrowRight, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { getUpcomingEvents, getPastEvents } from "@/data/events-data";
 import { Event } from "@/types";
 
 export default function EventsShowcase() {
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [pastEvents, setPastEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Cargar eventos en paralelo
+        const [upcoming, past] = await Promise.all([
+          getUpcomingEvents(),
+          getPastEvents()
+        ]);
+        
+        setUpcomingEvents(upcoming);
+        setPastEvents(past);
+      } catch (err) {
+        console.error('Error loading events:', err);
+        setError('Error cargando eventos. Por favor, intenta de nuevo.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadEvents();
+  }, []);
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -24,16 +53,57 @@ export default function EventsShowcase() {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    console.log('🎯 formatDate input:', dateString);
+    
+    if (!dateString) {
+      console.error('❌ Empty dateString provided');
+      return 'ENE 1';
+    }
+    
+    let date = new Date(dateString);
+    
+    // Si la fecha no es válida, intentar parsear diferentes formatos
+    if (isNaN(date.getTime())) {
+      console.log('🔧 Invalid date, trying different formats...');
+      
+      // Intentar formato DD/MM/YYYY
+      const dateParts = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (dateParts) {
+        const [, day, month, year] = dateParts;
+        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        console.log('✅ Parsed DD/MM/YYYY format:', date);
+      } else {
+        console.error('❌ Could not parse date:', dateString);
+        date = new Date(); // Fallback to current date
+      }
+    }
+    
+    // Verificar que la fecha sea válida después del parsing
+    if (isNaN(date.getTime())) {
+      console.error('❌ Date is still invalid after parsing');
+      return 'ENE 1';
+    }
+    
     const monthNames = {
       0: 'ENE', 1: 'FEB', 2: 'MAR', 3: 'ABR', 4: 'MAY', 5: 'JUN',
       6: 'JUL', 7: 'AGO', 8: 'SEP', 9: 'OCT', 10: 'NOV', 11: 'DIC'
     };
     
-    const month = monthNames[date.getMonth() as keyof typeof monthNames];
+    const monthIndex = date.getMonth();
+    const month = monthNames[monthIndex as keyof typeof monthNames];
     const day = date.getDate();
     
-    return `${month} ${day}`;
+    console.log('📅 Date components:', { monthIndex, month, day, finalDate: date });
+    
+    // Verificar que tanto month como day sean válidos
+    if (!month || isNaN(day) || day < 1 || day > 31) {
+      console.error('❌ Invalid date components:', { dateString, monthIndex, month, day });
+      return 'ENE 1'; // Fallback
+    }
+    
+    const result = `${month} ${day}`;
+    console.log('✅ Final formatted result:', result);
+    return result;
   };
 
   const formatPrice = (price: number) => {
@@ -57,7 +127,7 @@ export default function EventsShowcase() {
       }}
     >
       {/* Event Image */}
-      <div className="relative h-48 overflow-hidden bg-black">
+      <div className="relative aspect-square overflow-hidden bg-black">
         <Image
           src={event.image}
           alt={event.title}
@@ -69,10 +139,10 @@ export default function EventsShowcase() {
         {/* Date Badge */}
         <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-indigo-400/20">
           <div className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            {formatDate(event.date).split(' ')[1]}
+            {formatDate(event.date).split(' ')[1] || '1'}
           </div>
           <div className="text-[10px] font-medium text-zinc-400 leading-tight">
-            {formatDate(event.date).split(' ')[0]}
+            {formatDate(event.date).split(' ')[0] || 'ENE'}
           </div>
         </div>
 
@@ -173,32 +243,105 @@ export default function EventsShowcase() {
 
         {/* Events Carousel with Grid Pages */}
         <div className="relative">
-          {/* Carousel Container */}
-          <div 
-            ref={scrollRef}
-            className="flex overflow-x-auto scrollbar-hide py-4 sm:py-6 md:py-8 gap-8 sm:gap-12"
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              scrollSnapType: 'x mandatory'
-            }}
-          >
-            {/* Create pages of 9 events each (3x3 grid) */}
-            {Array.from({ length: Math.ceil(currentEvents.length / 9) }, (_, pageIndex) => {
-              const pageEvents = currentEvents.slice(pageIndex * 9, (pageIndex + 1) * 9);
-              return (
-                <div 
-                  key={pageIndex}
-                  className="flex-shrink-0 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-                  style={{ scrollSnapAlign: 'start' }}
-                >
-                  {pageEvents.map((event) => (
-                    <EventCard key={event.id} event={event} />
-                  ))}
+          {loading && (
+            <div className="flex justify-center items-center py-20">
+              <div className="flex items-center space-x-3 text-indigo-400">
+                <Loader2 className="animate-spin" size={24} />
+                <span className="text-lg">Cargando eventos...</span>
+              </div>
+            </div>
+          )}
+
+          {error && !loading && (
+            <div className="text-center py-20">
+              <div className="text-red-400 mb-4">{error}</div>
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-gradient-to-r from-indigo-400 to-purple-400 text-white rounded-full hover:from-indigo-500 hover:to-purple-500 transition-all duration-300"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && currentEvents.length === 0 && (
+            <div className="text-center py-16 sm:py-20 md:py-24">
+              <div className="max-w-md mx-auto">
+                {/* Icon */}
+                <div className="mb-6 flex justify-center">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-indigo-400/20 to-purple-400/20 flex items-center justify-center border border-indigo-400/20">
+                    <svg 
+                      className="w-8 h-8 text-indigo-400" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-6 4v4m6-4v4m-8-8h12l-1 12H7L6 7z" 
+                      />
+                    </svg>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+                
+                {/* Title */}
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                  No hay eventos {activeTab === 'upcoming' ? 'próximos' : 'pasados'}
+                </h3>
+                
+                {/* Description */}
+                <p className="text-zinc-400 text-sm sm:text-base leading-relaxed mb-6">
+                  {activeTab === 'upcoming' 
+                    ? 'Estamos preparando increíbles eventos para ti. ¡Regresa pronto para ver las novedades!'
+                    : 'Aún no hay eventos pasados registrados. ¡Los próximos eventos serán memorables!'
+                  }
+                </p>
+                
+                {/* CTA Button */}
+                {activeTab === 'upcoming' && (
+                  <button 
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-3 bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm font-medium rounded-full hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    Actualizar eventos
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && currentEvents.length > 0 && (
+            <>
+              {/* Carousel Container */}
+              <div 
+                ref={scrollRef}
+                className="flex overflow-x-auto scrollbar-hide py-4 sm:py-6 md:py-8 gap-8 sm:gap-12"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  scrollSnapType: 'x mandatory'
+                }}
+              >
+                {/* Create pages of 9 events each (3x3 grid) */}
+                {Array.from({ length: Math.ceil(currentEvents.length / 9) }, (_, pageIndex) => {
+                  const pageEvents = currentEvents.slice(pageIndex * 9, (pageIndex + 1) * 9);
+                  return (
+                    <div 
+                      key={pageIndex}
+                      className="flex-shrink-0 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+                      style={{ scrollSnapAlign: 'start' }}
+                    >
+                      {pageEvents.map((event) => (
+                        <EventCard key={event.id} event={event} />
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
 
         {/* CTA Button */}
