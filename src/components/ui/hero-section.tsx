@@ -58,11 +58,7 @@ export default function HeroSection() {
           {/* Event Details - Minimal */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-6 text-white/70 mb-6 sm:mb-8">
             <span className="text-sm sm:text-base font-medium tracking-wide">
-              {new Date(mainEvent?.date || "2024-09-15").toLocaleDateString('es-ES', { 
-                month: 'long', 
-                day: 'numeric',
-                year: 'numeric'
-              })}
+              {mainEvent?.date || "2024-09-15"}
             </span>
             <span className="hidden sm:inline text-white/30">•</span>
             <span className="text-sm sm:text-base font-medium tracking-wide">
