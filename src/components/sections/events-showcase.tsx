@@ -13,13 +13,13 @@ export default function EventsShowcase() {
 
   const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -400, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: -scrollRef.current.clientWidth, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: scrollRef.current.clientWidth, behavior: 'smooth' });
     }
   };
 
@@ -67,8 +67,8 @@ export default function EventsShowcase() {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         
         {/* Date Badge */}
-        <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-[#FFD60A]/20">
-          <div className="text-xl font-bold text-[#FFD60A]">
+        <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-indigo-400/20">
+          <div className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
             {formatDate(event.date).split(' ')[1]}
           </div>
           <div className="text-[10px] font-medium text-zinc-400 leading-tight">
@@ -79,7 +79,7 @@ export default function EventsShowcase() {
         {/* Price */}
         <div className="absolute bottom-4 left-4">
           <span className="text-white/60 text-sm">Desde</span>
-          <div className="text-2xl font-bold text-[#FFD60A]">
+          <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
             {formatPrice(event.ticketPrice)}
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function EventsShowcase() {
 
       {/* Card Content */}
       <div className="p-6 bg-black/40">
-        <h3 className="text-xl font-bold text-white mb-3 line-clamp-1 group-hover:text-[#FFD60A] transition-all duration-300 leading-tight tracking-wide">
+        <h3 className="text-xl font-bold text-white mb-3 line-clamp-1 group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 leading-tight tracking-wide">
           {event.title}
         </h3>
         
@@ -98,14 +98,14 @@ export default function EventsShowcase() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 text-sm text-zinc-500">
             <div className="flex items-center gap-1">
-              <MapPin size={14} className="text-[#FFD60A]" />
+              <MapPin size={14} className="text-indigo-400" />
               <span>{event.venue}</span>
             </div>
             <span>{event.time}</span>
           </div>
 
           <button 
-            className="p-2 bg-[#FFD60A] text-black opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 rounded-full shadow-lg hover:bg-[#FFCC00]"
+            className="p-2 bg-gradient-to-r from-indigo-400 to-purple-400 text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 rounded-full shadow-lg hover:from-indigo-500 hover:to-purple-500"
             aria-label="Ver detalles"
           >
             <ArrowRight size={18} />
@@ -116,12 +116,12 @@ export default function EventsShowcase() {
   );
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-black overflow-hidden">
-      <div className="container mx-auto px-4 max-w-full">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-32 xl:py-40 bg-black overflow-hidden">
+      <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="max-w-2xl mb-10 sm:mb-12 md:mb-16 lg:mb-20">
+        <div className="max-w-3xl mb-10 sm:mb-12 md:mb-16 lg:mb-20">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-[0.9] tracking-tight">
-            Próximos <span className="text-[#FFD60A]">Eventos</span>
+            Próximos <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Eventos</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed tracking-wide font-light">
             Descubre los mejores eventos musicales y culturales de la ciudad.
@@ -135,7 +135,7 @@ export default function EventsShowcase() {
               onClick={() => setActiveTab('upcoming')}
               className={`pb-4 sm:pb-6 px-1 sm:px-2 text-xs sm:text-sm font-bold transition-all duration-300 tracking-[0.15em] sm:tracking-[0.2em] leading-none ${
                 activeTab === 'upcoming'
-                  ? 'text-[#FFD60A] border-b-2 border-[#FFD60A]'
+                  ? 'text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text border-b-2 border-indigo-400'
                   : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
@@ -146,7 +146,7 @@ export default function EventsShowcase() {
               onClick={() => setActiveTab('past')}
               className={`pb-4 sm:pb-6 px-1 sm:px-2 text-xs sm:text-sm font-bold transition-all duration-300 tracking-[0.15em] sm:tracking-[0.2em] leading-none ${
                 activeTab === 'past'
-                  ? 'text-[#FFD60A] border-b-2 border-[#FFD60A]'
+                  ? 'text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text border-b-2 border-indigo-400'
                   : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
@@ -158,44 +158,55 @@ export default function EventsShowcase() {
           <div className="flex gap-2 sm:gap-4 pb-4 sm:pb-6">
             <button
               onClick={scrollLeft}
-              className="p-2 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-[#FFD60A] hover:border-[#FFD60A]/40 transition-all duration-300"
+              className="p-2 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300"
             >
               <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={scrollRight}
-              className="p-2 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-[#FFD60A] hover:border-[#FFD60A]/40 transition-all duration-300"
+              className="p-2 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300"
             >
               <ChevronRight size={18} className="sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
 
-        {/* Events Carousel */}
+        {/* Events Carousel with Grid Pages */}
         <div className="relative">
           {/* Carousel Container */}
           <div 
             ref={scrollRef}
-            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-4 sm:py-6 md:py-8"
+            className="flex overflow-x-auto scrollbar-hide py-4 sm:py-6 md:py-8 gap-8 sm:gap-12"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
+              scrollSnapType: 'x mandatory'
             }}
           >
-            {currentEvents.map((event) => (
-              <div key={event.id} className="flex-shrink-0 w-72 sm:w-80">
-                <EventCard event={event} />
-              </div>
-            ))}
+            {/* Create pages of 9 events each (3x3 grid) */}
+            {Array.from({ length: Math.ceil(currentEvents.length / 9) }, (_, pageIndex) => {
+              const pageEvents = currentEvents.slice(pageIndex * 9, (pageIndex + 1) * 9);
+              return (
+                <div 
+                  key={pageIndex}
+                  className="flex-shrink-0 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+                  style={{ scrollSnapAlign: 'start' }}
+                >
+                  {pageEvents.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* CTA Button */}
         <div className="flex justify-center mt-8 sm:mt-12 md:mt-16">
           <button 
-            className="group px-6 sm:px-8 py-3 sm:py-4 bg-[#FFD60A] text-black text-sm sm:text-base font-medium transition-all duration-300 rounded-full shadow-lg hover:bg-[#FFCC00]"
+            className="group px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm sm:text-base font-medium transition-all duration-300 rounded-full shadow-lg hover:from-indigo-500 hover:to-purple-500"
             style={{
-              boxShadow: '0 10px 30px rgba(255, 214, 10, 0.3)'
+              boxShadow: '0 10px 30px rgba(99, 102, 241, 0.3)'
             }}
           >
             <span className="flex items-center gap-2">

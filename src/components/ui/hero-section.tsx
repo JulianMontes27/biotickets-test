@@ -37,11 +37,11 @@ export default function HeroSection() {
       </div>
 
       {/* Minimal Content */}
-      <div className="relative z-10 h-full flex flex-col justify-between p-4 sm:p-6 md:p-8 lg:p-16 pt-32 sm:pt-36 md:pt-40 lg:pt-48">
+      <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-6 md:p-8 lg:p-16 pb-24 sm:pb-32 md:pb-40 lg:pb-48">
         
 
-        {/* Center Content */}
-        <div className="max-w-4xl">
+        {/* Main Content - Bottom Positioned */}
+        <div className="container mx-auto px-4">
           {/* Event Category */}
           <div className="mb-4 sm:mb-6">
             <span className="text-white/50 text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase leading-relaxed">
@@ -50,9 +50,9 @@ export default function HeroSection() {
           </div>
 
           {/* Main Title */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black mb-4 sm:mb-6 leading-[0.9] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[0.9] tracking-tight">
             <span className="text-white">{(mainEvent?.title || "FESTIVAL ÉPICO").split(' ').slice(0, -1).join(' ')} </span>
-            <span className="text-[#FFD60A]">{(mainEvent?.title || "FESTIVAL ÉPICO 2024").split(' ').slice(-1)[0]}</span>
+            <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">{(mainEvent?.title || "FESTIVAL ÉPICO 2024").split(' ').slice(-1)[0]}</span>
           </h1>
 
           {/* Event Details - Minimal */}
@@ -73,9 +73,9 @@ export default function HeroSection() {
           {/* CTA Buttons - 3D Style */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button 
-              className="relative w-full sm:w-auto px-6 sm:px-8 py-3 bg-[#FFD60A] text-black text-sm sm:text-base font-semibold rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 group hover:bg-[#FFCC00]"
+              className="relative w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm sm:text-base font-semibold rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 group hover:from-indigo-500 hover:to-purple-500"
               style={{
-                boxShadow: '0 6px 20px rgba(255,214,10,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
+                boxShadow: '0 6px 20px rgba(99,102,241,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
               }}
             >
               <span className="flex items-center justify-center">
@@ -85,15 +85,15 @@ export default function HeroSection() {
             </button>
             
             <button 
-              className="relative w-full sm:w-auto px-6 sm:px-8 py-3 bg-transparent text-white text-sm sm:text-base font-semibold border-2 border-white/30 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 hover:border-[#FFD60A] hover:text-[#FFD60A]"
+              className="relative w-full sm:w-auto px-6 sm:px-8 py-3 bg-transparent text-white text-sm sm:text-base font-semibold border-2 border-white/30 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-400/10 hover:to-purple-400/10"
             >
               Ver Detalles
             </button>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="flex justify-center pb-4 sm:pb-0">
+        {/* Bottom Section - Scroll Indicator */}
+        <div className="flex justify-center mt-8 sm:mt-12">
           {/* Scroll Indicator */}
           <div className="flex flex-col items-center animate-bounce">
             <span className="text-white/60 text-[10px] sm:text-xs font-mono mb-2 sm:mb-3 tracking-[0.2em] sm:tracking-[0.25em] leading-relaxed">DESCUBRE MÁS</span>

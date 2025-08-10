@@ -25,13 +25,13 @@ export default function Header() {
 
           <div className="hidden md:flex items-center space-x-8">
             <nav className="flex items-center space-x-8">
-              <a href="#eventos" className="text-white/70 hover:text-[#FFD60A] transition-colors duration-300 text-sm font-medium tracking-wide">
+              <a href="#eventos" className="text-white/70 hover:text-indigo-400 transition-colors duration-300 text-sm font-medium tracking-wide">
                 Eventos
               </a>
-              <a href="#wallet" className="text-white/70 hover:text-[#FFD60A] transition-colors duration-300 text-sm font-medium tracking-wide">
+              <a href="#wallet" className="text-white/70 hover:text-indigo-400 transition-colors duration-300 text-sm font-medium tracking-wide">
                 Apple Wallet
               </a>
-              <a href="#nosotros" className="text-white/70 hover:text-[#FFD60A] transition-colors duration-300 text-sm font-medium tracking-wide">
+              <a href="#nosotros" className="text-white/70 hover:text-indigo-400 transition-colors duration-300 text-sm font-medium tracking-wide">
                 Nosotros
               </a>
             </nav>
@@ -40,16 +40,16 @@ export default function Header() {
             <div className="w-px h-6 bg-white/20"></div>
             
             {/* CTA Button */}
-            <button className="group relative px-6 py-2 bg-[#FFD60A]/10 backdrop-blur-sm border border-[#FFD60A]/20 rounded-full text-[#FFD60A] font-medium text-sm transition-all duration-300 hover:bg-[#FFD60A]/20 hover:border-[#FFD60A]/40">
+            <button className="group relative px-6 py-2 bg-gradient-to-r from-indigo-400/10 to-purple-400/10 backdrop-blur-sm border border-indigo-400/20 rounded-full text-indigo-400 font-medium text-sm transition-all duration-300 hover:from-indigo-400/20 hover:to-purple-400/20 hover:border-indigo-400/40">
               <span className="relative z-10">Iniciar Sesión</span>
-              <div className="absolute inset-0 bg-[#FFD60A]/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/5 to-purple-400/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button 
-              className="text-white/70 hover:text-[#FFD60A] transition-colors duration-300 p-2"
+              className="text-white/70 hover:text-indigo-400 transition-colors duration-300 p-2"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
@@ -63,27 +63,27 @@ export default function Header() {
             <div className="px-4 py-4 space-y-2 max-w-full">
               <a 
                 href="#eventos" 
-                className="block px-4 py-3 text-white/70 hover:text-[#FFD60A] hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
+                className="block px-4 py-3 text-white/70 hover:text-indigo-400 hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
                 onClick={toggleMenu}
               >
                 Eventos
               </a>
               <a 
                 href="#wallet" 
-                className="block px-4 py-3 text-white/70 hover:text-[#FFD60A] hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
+                className="block px-4 py-3 text-white/70 hover:text-indigo-400 hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
                 onClick={toggleMenu}
               >
                 Apple Wallet
               </a>
               <a 
                 href="#nosotros" 
-                className="block px-4 py-3 text-white/70 hover:text-[#FFD60A] hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
+                className="block px-4 py-3 text-white/70 hover:text-indigo-400 hover:bg-zinc-800/30 rounded-lg transition-all duration-200"
                 onClick={toggleMenu}
               >
                 Nosotros
               </a>
               <div className="pt-2 mt-2 border-t border-zinc-800/50">
-                <button className="w-full px-6 py-3 bg-[#FFD60A]/10 backdrop-blur-sm border border-[#FFD60A]/20 rounded-full text-[#FFD60A] font-medium text-sm transition-all duration-300 hover:bg-[#FFD60A]/20 hover:border-[#FFD60A]/40">
+                <button className="w-full px-6 py-3 bg-gradient-to-r from-indigo-400/10 to-purple-400/10 backdrop-blur-sm border border-indigo-400/20 rounded-full text-indigo-400 font-medium text-sm transition-all duration-300 hover:from-indigo-400/20 hover:to-purple-400/20 hover:border-indigo-400/40">
                   Iniciar Sesión
                 </button>
               </div>
