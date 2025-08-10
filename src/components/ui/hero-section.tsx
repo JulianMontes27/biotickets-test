@@ -45,7 +45,7 @@ export default function HeroSection() {
           {/* Event Category */}
           <div className="mb-4 sm:mb-6">
             <span className="text-white/50 text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase leading-relaxed">
-              {mainEvent?.category || "Evento Principal"}
+              {"Evento Principal"}
             </span>
           </div>
 
