@@ -263,7 +263,7 @@ export class TribeEventsAdapter {
       // No hay coordenadas disponibles en la API
       venueLatitude: undefined,
       venueLongitude: undefined,
-      venueMapImage: venueMapImage,
+      venueMapImage: venueMapImage || undefined,
       ticketPrice: this.formatPrice(tribeEvent.cost || '0'),
       image: (tribeEvent.image && tribeEvent.image.url) || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3',
       bannerImage: bannerImage || (tribeEvent.image && tribeEvent.image.url) || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3',
