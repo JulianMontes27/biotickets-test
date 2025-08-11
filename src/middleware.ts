@@ -39,7 +39,9 @@ export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/api/') || 
       request.nextUrl.pathname === '/') {
     
-    const ip = request.ip ?? request.headers.get('x-forwarded-for') ?? 'unknown';
+    const ip = request.headers.get('x-forwarded-for') ?? 
+                request.headers.get('x-real-ip') ?? 
+                'unknown';
     const key = `${ip}:${request.nextUrl.pathname}`;
     const now = Date.now();
     const windowMs = 60000; // 1 minute
