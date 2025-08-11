@@ -1,19 +1,46 @@
+"use client";
+
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { heroBannerService } from "@/services/hero-banner-service";
 import HeroImage from "./hero-image";
+import { useEffect, useState } from "react";
 
-export default async function HeroSection() {
-  // Fetch data on the server
-  const heroBanner = await heroBannerService.getMainHeroBanner();
+export default function HeroSection() {
+  const [heroBanner, setHeroBanner] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHeroBanner = async () => {
+      try {
+        const response = await fetch('/api/hero-banner');
+        const banner = await response.json();
+        setHeroBanner(banner);
+      } catch (error) {
+        console.error('Error loading hero banner:', error);
+        // Fallback en caso de error
+        setHeroBanner({
+          imageUrl: "https://www.biotickets.com/wp-content/uploads/2025/07/Banner_-Kris_-1920-scaled.jpg",
+          title: "KRISR U.V.E.S LIVE"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHeroBanner();
+  }, []);
 
   return (
     <section className="relative h-screen max-w-full bg-black overflow-hidden">
       {/* Full Screen Image */}
       <div className="absolute inset-0">
         <HeroImage
-          src={heroBanner?.imageUrl || "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3"}
-          alt={heroBanner?.title || "BioTickets Banner"}
+          src={heroBanner?.imageUrl || "https://www.biotickets.com/wp-content/uploads/2025/07/Banner_-Kris_-1920-scaled.jpg"}
+          alt={heroBanner?.title || "KRISR U.V.E.S LIVE"}
         />
+        {/* Mobile Blur Overlay */}
+        <div className="absolute inset-0 backdrop-blur-md md:backdrop-blur-none" />
+        
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/40" />
         
@@ -25,6 +52,20 @@ export default async function HeroSection() {
       <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-6 md:p-8 lg:p-16 pb-24 sm:pb-32 md:pb-40 lg:pb-48">
         
 
+        {/* Mobile Featured Image - Only on mobile */}
+        <div className="block md:hidden mb-6 sm:mb-8 text-center">
+          <div className="inline-block relative">
+            <img 
+              src="https://www.biotickets.com/wp-content/uploads/elementor/thumbs/Banner_-Kris_-640-1-r8fg73hxfl1jrs83v93kgygr17mmd3ptcky6gdinc0.jpg"
+              alt="KRISR Banner Mobile"
+              className="w-80 h-80 sm:w-96 sm:h-96 object-cover rounded-2xl shadow-2xl border border-white/20"
+              loading="lazy"
+            />
+            {/* Mobile image overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-2xl" />
+          </div>
+        </div>
+
         {/* Main Content - Bottom Positioned */}
         <div className="container mx-auto px-4">
           {/* Brand Category */}
@@ -34,41 +75,43 @@ export default async function HeroSection() {
             </span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[0.9] tracking-tight">
-            <span className="text-white">Los mejores eventos de </span>
-            <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Colombia</span>
-          </h1>
-
-          {/* Description */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-6 text-white/70 mb-6 sm:mb-8">
-            <span className="text-sm sm:text-base font-medium tracking-wide">
-              Descubre conciertos únicos
-            </span>
-            <span className="hidden sm:inline text-white/30">•</span>
-            <span className="text-sm sm:text-base font-medium tracking-wide">
-              Experiencias inolvidables
+          {/* Event Title */}
+          <div className="mb-4 sm:mb-6">
+            <span className="text-indigo-400 text-xs sm:text-sm font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase leading-relaxed">
+              EVENTO ESPECIAL
             </span>
           </div>
+
+          {/* Main Title */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-3 sm:mb-4 leading-[0.9] tracking-tight">
+            <span className="text-white">KRISR U.V.E.S LIVE</span>
+          </h1>
+
+          {/* Venue */}
+          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white/90 mb-6 sm:mb-8 leading-tight">
+            Centro de Eventos Valle del Pacífico
+          </h2>
 
           {/* CTA Buttons - 3D Style */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button 
+              onClick={() => window.open('https://eventos.biotickets.com/ordertickets.asp?p=152&a=0&src=&backurl=%2F%2Feventos%2Ebiotickets%2Ecom%2Fdefault%2Easp', '_blank')}
               className="relative w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm sm:text-base font-semibold rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 group hover:from-indigo-500 hover:to-purple-500"
               style={{
                 boxShadow: '0 6px 20px rgba(99,102,241,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
               }}
             >
               <span className="flex items-center justify-center">
-                Comprar Boletos
+                Comprar Entradas
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
               </span>
             </button>
             
             <button 
-              className="relative w-full sm:w-auto px-6 sm:px-8 py-3 bg-transparent text-white text-sm sm:text-base font-semibold border-2 border-white/30 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-400/10 hover:to-purple-400/10"
+              onClick={() => window.open('https://eventos.biotickets.com/ordertickets.asp?p=152&a=0&src=&backurl=%2F%2Feventos%2Ebiotickets%2Ecom%2Fdefault%2Easp', '_blank')}
+              className="relative hidden sm:block w-full sm:w-auto px-6 sm:px-8 py-3 bg-transparent text-white text-sm sm:text-base font-semibold border-2 border-white/30 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-400/10 hover:to-purple-400/10"
             >
-              Ver Detalles
+              Más Información
             </button>
           </div>
         </div>

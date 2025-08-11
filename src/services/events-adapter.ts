@@ -3,7 +3,47 @@ import { WordPressEvent, wordpressAPI } from './wordpress-api';
 
 export class EventsAdapter {
   private stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, '').trim();
+    // Primero decodificar entidades HTML
+    const decodedHtml = this.decodeHtmlEntities(html);
+    // Luego remover tags HTML
+    return decodedHtml.replace(/<[^>]*>/g, '').trim();
+  }
+
+  private decodeHtmlEntities(text: string): string {
+    // Usar el API del navegador para decodificar entidades HTML
+    if (typeof document !== 'undefined') {
+      const textarea = document.createElement('textarea');
+      textarea.innerHTML = text;
+      return textarea.value;
+    }
+    
+    // Fallback manual para server-side
+    const entityMap: { [key: string]: string } = {
+      '&#8211;': '–',  // en dash
+      '&#8212;': '—',  // em dash
+      '&#8216;': '\u2018',  // left single quotation mark
+      '&#8217;': '\u2019',  // right single quotation mark
+      '&#8220;': '\u201c',  // left double quotation mark
+      '&#8221;': '\u201d',  // right double quotation mark
+      '&#038;': '&',   // ampersand
+      '&#039;': "'",   // apostrophe
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&apos;': "'",
+      '&nbsp;': ' ',
+      '&#x2013;': '–', // en dash hex
+      '&#x2014;': '—', // em dash hex
+      '&#45;': '-',    // hyphen-minus
+    };
+
+    let decodedText = text;
+    for (const [entity, character] of Object.entries(entityMap)) {
+      decodedText = decodedText.replace(new RegExp(entity, 'g'), character);
+    }
+    
+    return decodedText;
   }
 
   private formatDate(dateString: string): string {

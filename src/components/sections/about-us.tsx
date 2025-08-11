@@ -56,7 +56,7 @@ export default function AboutUs() {
             </div>
 
             {/* Values */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-2 h-2 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"></div>
                 <span className="text-white text-sm sm:text-base font-semibold tracking-wide">Confianza</span>

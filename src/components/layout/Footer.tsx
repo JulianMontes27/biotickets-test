@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin, Music, Sparkles } from "lucide-react";
+import { Facebook, Twitter, Instagram, Mail, Phone, MapPin, MessageCircle, Sparkles } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -12,7 +12,7 @@ export default function Footer() {
       </div>
       
       <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
           <div className="space-y-4 sm:space-y-6 sm:col-span-2 md:col-span-1">
             <div className="text-white text-xl sm:text-2xl font-bold font-mono tracking-[0.15em] leading-none">
               BIOTICKETS
@@ -21,49 +21,19 @@ export default function Footer() {
               Conectamos artistas con audiencias apasionadas. Tu plataforma de confianza para experiencias musicales inolvidables.
             </p>
             <div className="flex space-x-3 sm:space-x-4">
-              <Link href="#" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
-                <Facebook size={16} className="group-hover:scale-110 transition-transform duration-300" />
-              </Link>
-              <Link href="#" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
-                <Twitter size={16} className="group-hover:scale-110 transition-transform duration-300" />
-              </Link>
-              <Link href="#" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
+              <Link href="https://www.instagram.com/biotickets" target="_blank" rel="noopener noreferrer" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
                 <Instagram size={16} className="group-hover:scale-110 transition-transform duration-300" />
               </Link>
+              <Link href="https://www.facebook.com/biotickets" target="_blank" rel="noopener noreferrer" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
+                <Facebook size={16} className="group-hover:scale-110 transition-transform duration-300" />
+              </Link>
+              <Link href="https://wa.me/+573001234567" target="_blank" rel="noopener noreferrer" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
+                <MessageCircle size={16} className="group-hover:scale-110 transition-transform duration-300" />
+              </Link>
+              <Link href="mailto:info@biotickets.com" className="group p-2.5 sm:p-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-full text-white/70 hover:text-indigo-400 hover:border-indigo-400/40 transition-all duration-300">
+                <Mail size={16} className="group-hover:scale-110 transition-transform duration-300" />
+              </Link>
             </div>
-          </div>
-
-          <div className="space-y-4 sm:space-y-6">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Music className="text-indigo-400" size={18} />
-              <h3 className="font-bold text-white text-base sm:text-lg tracking-wide">EVENTOS</h3>
-            </div>
-            <ul className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
-              <li>
-                <Link href="#eventos" className="text-zinc-400 hover:text-indigo-400 transition-colors duration-300 font-medium tracking-wide flex items-center gap-2 group">
-                  <div className="w-1 h-1 bg-zinc-600 rounded-full group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300"></div>
-                  Próximos Conciertos
-                </Link>
-              </li>
-              <li>
-                <Link href="#eventos" className="text-zinc-400 hover:text-indigo-400 transition-colors duration-300 font-medium tracking-wide flex items-center gap-2 group">
-                  <div className="w-1 h-1 bg-zinc-600 rounded-full group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300"></div>
-                  Festivales
-                </Link>
-              </li>
-              <li>
-                <Link href="#eventos" className="text-zinc-400 hover:text-indigo-400 transition-colors duration-300 font-medium tracking-wide flex items-center gap-2 group">
-                  <div className="w-1 h-1 bg-zinc-600 rounded-full group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300"></div>
-                  Teatro y Shows
-                </Link>
-              </li>
-              <li>
-                <Link href="#eventos" className="text-zinc-400 hover:text-indigo-400 transition-colors duration-300 font-medium tracking-wide flex items-center gap-2 group">
-                  <div className="w-1 h-1 bg-zinc-600 rounded-full group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-colors duration-300"></div>
-                  Eventos Deportivos
-                </Link>
-              </li>
-            </ul>
           </div>
 
           <div className="space-y-4 sm:space-y-6">

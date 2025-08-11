@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { MapPin, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Event } from "@/types";
 
 interface EventCardProps {
@@ -12,6 +12,16 @@ interface EventCardProps {
 export default function EventCard({ event }: EventCardProps) {
   const [hoveredCard, setHoveredCard] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
+
+  // Función para decodificar entidades HTML
+  const decodeHtmlEntities = (text: string): string => {
+    if (typeof document !== 'undefined') {
+      const textarea = document.createElement('textarea');
+      textarea.innerHTML = text;
+      return textarea.value;
+    }
+    return text.replace(/&#8211;/g, '–').replace(/&#8212;/g, '—');
+  };
 
   const formatDate = (dateString: string) => {
     if (!dateString) {
@@ -54,31 +64,24 @@ export default function EventCard({ event }: EventCardProps) {
     return `${month} ${day}`;
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
   return (
     <div
-      className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 h-full"
+      className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col"
       onMouseEnter={() => setHoveredCard(true)}
       onMouseLeave={() => setHoveredCard(false)}
       style={{
         transform: hoveredCard ? 'translateY(-4px) rotateY(2deg)' : 'translateY(0) rotateY(0deg)',
-        boxShadow: hoveredCard ? '0 25px 50px rgba(255, 214, 10, 0.1), 0 10px 30px rgba(0, 0, 0, 0.4)' : 'none'
+        boxShadow: hoveredCard ? '0 25px 50px rgba(255, 214, 10, 0.1), 0 10px 30px rgba(0, 0, 0, 0.4)' : 'none',
+        height: '480px'
       }}
     >
       {/* Event Image */}
-      <div className="relative aspect-square overflow-hidden bg-black">
+      <div className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl" style={{ width: '100%', height: '360px' }}>
         <Image
           src={imageError ? 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3' : event.image}
           alt={event.title}
           fill
-          className="object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
+          className="object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 rounded-t-2xl"
           onError={() => setImageError(true)}
           unoptimized={imageError}
           loading="lazy"
@@ -96,42 +99,13 @@ export default function EventCard({ event }: EventCardProps) {
             {formatDate(event.date).split(' ')[0] || 'ENE'}
           </div>
         </div>
-
-        {/* Price */}
-        <div className="absolute bottom-4 left-4">
-          <span className="text-white/60 text-sm">Desde</span>
-          <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            {formatPrice(event.ticketPrice)}
-          </div>
-        </div>
       </div>
 
-      {/* Card Content */}
-      <div className="p-6 bg-black/40">
-        <h3 className="text-xl font-bold text-white mb-3 line-clamp-1 group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 leading-tight tracking-wide">
-          {event.title}
+      {/* Card Content - Title Only */}
+      <div className="p-4 bg-black/40 flex-1 flex flex-col justify-start min-h-0" style={{ height: '120px' }}>
+        <h3 className="text-lg font-bold text-white line-clamp-2 group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 leading-tight tracking-wide text-left py-2">
+          {decodeHtmlEntities(event.title)}
         </h3>
-        
-        <p className="text-zinc-400 text-sm mb-4 line-clamp-2 leading-relaxed font-light tracking-wide">
-          {event.description}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-zinc-500">
-            <div className="flex items-center gap-1">
-              <MapPin size={14} className="text-indigo-400" />
-              <span>{event.venue}</span>
-            </div>
-            <span>{event.time}</span>
-          </div>
-
-          <button 
-            className="p-2 bg-gradient-to-r from-indigo-400 to-purple-400 text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 rounded-full shadow-lg hover:from-indigo-500 hover:to-purple-500"
-            aria-label="Ver detalles"
-          >
-            <ArrowRight size={18} />
-          </button>
-        </div>
       </div>
     </div>
   );

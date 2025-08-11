@@ -158,10 +158,21 @@ export class TribeEventsAdapter {
       const tribeEvents = await wordpressAPI.getTribePastEvents(limit);
       const convertedEvents = await this.convertMultipleEvents(tribeEvents);
       
-      console.log('🔍 Tribe past events:', convertedEvents.length);
-      console.log('📝 First few past events:', convertedEvents.slice(0, 3).map(e => ({ title: e.title, date: e.date })));
+      // Filtrar solo eventos pasados y ordenar de más reciente a más antiguo
+      const pastEvents = convertedEvents
+        .filter(event => event.status === 'past')
+        .sort((a, b) => {
+          // Ordenar por fecha de inicio, más reciente primero
+          const dateA = new Date(a.startDateTime || a.date);
+          const dateB = new Date(b.startDateTime || b.date);
+          return dateB.getTime() - dateA.getTime();
+        })
+        .slice(0, limit);
       
-      return convertedEvents;
+      console.log('🔍 Tribe past events:', pastEvents.length);
+      console.log('📝 First few past events (sorted):', pastEvents.slice(0, 3).map(e => ({ title: e.title, date: e.date, startDateTime: e.startDateTime })));
+      
+      return pastEvents;
     } catch (error) {
       console.error('Error fetching tribe past events:', error);
       return [];
