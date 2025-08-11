@@ -101,7 +101,11 @@ export class EventsAdapter {
     return 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80';
   }
 
-  private async getVenueName(venueId: string): Promise<string> {
+  private async getVenueName(venueId: string | undefined): Promise<string> {
+    if (!venueId) {
+      return 'Bogotá, Colombia'; // Fallback if no venue ID
+    }
+    
     try {
       const venue = await wordpressAPI.getVenue(venueId);
       if (venue) {
