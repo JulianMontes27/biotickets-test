@@ -405,7 +405,7 @@ class WordPressAPI {
       per_page: limit,
       ends_before: currentDate,
       orderby: 'start_date',
-      order: 'desc'
+      order: 'desc' as 'desc'
     };
     
     console.log('🔍 API params:', params);
