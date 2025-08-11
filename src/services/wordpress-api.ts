@@ -101,6 +101,8 @@ export interface WordPressVenue {
     _VenueCountry: string;
     _VenueStateProvince: string;
     _VenueZip: string;
+    _VenueLat?: string;
+    _VenueLng?: string;
   };
 }
 
