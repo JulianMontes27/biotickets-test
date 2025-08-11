@@ -300,8 +300,8 @@ class WordPressAPI {
     // Intentar obtener todos los eventos primero sin filtros
     return this.getEvents({
       per_page: limit * 3, // Pedir más eventos para filtrar localmente
-      orderby: 'date',
-      order: 'desc',
+      orderby: 'date' as const,
+      order: 'desc' as const,
       _embed: true,
       status: 'publish'
     });
@@ -404,8 +404,8 @@ class WordPressAPI {
     const params = {
       per_page: limit,
       ends_before: currentDate,
-      orderby: 'start_date',
-      order: 'desc' as 'desc'
+      orderby: 'start_date' as const,
+      order: 'desc' as const
     };
     
     console.log('🔍 API params:', params);
