@@ -1,13 +1,17 @@
 "use client";
 
 import { ArrowRight, ChevronDown } from "lucide-react";
-import { heroBannerService } from "@/services/hero-banner-service";
 import HeroImage from "./hero-image";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+
+interface HeroBanner {
+  imageUrl: string;
+  title: string;
+}
 
 export default function HeroSection() {
-  const [heroBanner, setHeroBanner] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [heroBanner, setHeroBanner] = useState<HeroBanner | null>(null);
 
   useEffect(() => {
     const loadHeroBanner = async () => {
@@ -22,8 +26,8 @@ export default function HeroSection() {
           imageUrl: "https://www.biotickets.com/wp-content/uploads/2025/07/Banner_-Kris_-1920-scaled.jpg",
           title: "KRISR U.V.E.S LIVE"
         });
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error('Load banner error:', error);
       }
     };
 
@@ -55,9 +59,11 @@ export default function HeroSection() {
         {/* Mobile Featured Image - Only on mobile */}
         <div className="block md:hidden mb-6 sm:mb-8 text-center">
           <div className="inline-block relative">
-            <img 
+            <Image 
               src="https://www.biotickets.com/wp-content/uploads/elementor/thumbs/Banner_-Kris_-640-1-r8fg73hxfl1jrs83v93kgygr17mmd3ptcky6gdinc0.jpg"
               alt="KRISR Banner Mobile"
+              width={320}
+              height={320}
               className="w-80 h-80 sm:w-96 sm:h-96 object-cover rounded-2xl shadow-2xl border border-white/20"
               loading="lazy"
             />
