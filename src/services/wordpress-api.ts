@@ -371,7 +371,13 @@ class WordPressAPI {
     ).toString();
 
     const url = `${TRIBE_EVENTS_API_BASE}/events?${queryString}`;
+    console.log('🔍 Final Tribe API URL:', url);
     const response = await this.fetchWithErrorHandling<{events: TribeEvent[]}>(url);
+    console.log('🔍 Tribe API response:', {
+      eventsCount: response.events?.length || 0,
+      totalResponse: !!response,
+      hasEvents: !!response.events
+    });
     return response.events || [];
   }
 
@@ -393,12 +399,19 @@ class WordPressAPI {
     
     console.log('🔍 Fetching past events before:', currentDate);
     
-    return this.getTribeEvents({
+    const params = {
       per_page: limit,
       ends_before: currentDate,
       orderby: 'start_date',
       order: 'desc'
-    });
+    };
+    
+    console.log('🔍 API params:', params);
+    
+    const result = await this.getTribeEvents(params);
+    console.log('🔍 getTribeEvents returned:', Array.isArray(result) ? result.length : typeof result, 'events');
+    
+    return result;
   }
 }
 

@@ -117,7 +117,27 @@ export class EventsAdapter {
   }
 
   private getBannerImage(wpEvent: WordPressEvent): string {
-    // Intentar obtener la imagen de banner desde _embedded (imagen destacada en tamaño completo)
+    // Primero intentar extraer la imagen del banner desde la descripción HTML
+    if (wpEvent.content?.rendered) {
+      const imgMatch = wpEvent.content.rendered.match(/src="([^"]*Banner[^"]*1920[^"]*\.jpg)"/i);
+      if (imgMatch && imgMatch[1]) {
+        return imgMatch[1];
+      }
+      
+      // Buscar cualquier imagen grande en la descripción
+      const largeImgMatch = wpEvent.content.rendered.match(/src="([^"]*\.(jpg|jpeg|png))"[^>]*width="(\d+)"/gi);
+      if (largeImgMatch) {
+        for (const match of largeImgMatch) {
+          const urlMatch = match.match(/src="([^"]*)"/);
+          const widthMatch = match.match(/width="(\d+)"/);
+          if (urlMatch && widthMatch && parseInt(widthMatch[1]) >= 1000) {
+            return urlMatch[1];
+          }
+        }
+      }
+    }
+    
+    // Fallback: intentar obtener la imagen destacada desde _embedded
     const featuredMedia = wpEvent._embedded?.['wp:featuredmedia']?.[0];
     
     if (featuredMedia?.media_details?.sizes?.large?.source_url) {
@@ -128,7 +148,7 @@ export class EventsAdapter {
       return featuredMedia.source_url;
     }
     
-    // Fallback para banner específico del evento
+    // Fallback final basado en el título del evento
     const eventTitle = wpEvent.title.rendered.toLowerCase();
     
     if (eventTitle.includes('fiesta de verano')) {
@@ -141,9 +161,17 @@ export class EventsAdapter {
     return 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80';
   }
 
-  private async getVenueName(venueId: string | undefined): Promise<string> {
+  private async getVenueInfo(venueId: string | undefined): Promise<{
+    name: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
+  }> {
     if (!venueId) {
-      return 'Bogotá, Colombia'; // Fallback if no venue ID
+      return { 
+        name: 'Bogotá, Colombia',
+        address: 'Bogotá, Colombia'
+      }; // Fallback if no venue ID
     }
     
     try {
@@ -151,17 +179,28 @@ export class EventsAdapter {
       if (venue) {
         const venueName = this.stripHtml(venue.title.rendered);
         const city = venue.meta._VenueCity;
+        const address = venue.meta._VenueAddress;
+        const latitude = venue.meta._VenueLat ? parseFloat(venue.meta._VenueLat) : undefined;
+        const longitude = venue.meta._VenueLng ? parseFloat(venue.meta._VenueLng) : undefined;
         
-        if (city) {
-          return `${venueName}, ${city}`;
-        }
-        return venueName;
+        const fullName = city ? `${venueName}, ${city}` : venueName;
+        const fullAddress = address && city ? `${address}, ${city}` : (address || city || fullName);
+        
+        return {
+          name: fullName,
+          address: fullAddress,
+          latitude,
+          longitude
+        };
       }
     } catch (error) {
       console.warn('Error fetching venue:', error);
     }
     
-    return 'Bogotá, Colombia'; // Fallback
+    return { 
+      name: 'Bogotá, Colombia',
+      address: 'Bogotá, Colombia'
+    }; // Fallback
   }
 
   async convertToEvent(wpEvent: WordPressEvent): Promise<Event> {
@@ -181,8 +220,9 @@ export class EventsAdapter {
     const cost = wpEvent.meta?._tribe_events_cost || this.extractPriceFromTitle(wpEvent.title.rendered);
     
     // Extraer venue del título/contenido si no está en meta
-    const venue = await this.getVenueName(wpEvent.meta?._tribe_events_venue_id) || 
-                  this.extractVenueFromContent(wpEvent.title.rendered, wpEvent.content.rendered);
+    const venueInfo = await this.getVenueInfo(wpEvent.meta?._tribe_events_venue_id);
+    const venueName = venueInfo.name || 
+                      this.extractVenueFromContent(wpEvent.title.rendered, wpEvent.content.rendered);
     
     // Extraer fecha real del evento del título si no está en meta
     const realEventDate = this.extractEventDateFromTitle(wpEvent.title.rendered);
@@ -211,7 +251,10 @@ export class EventsAdapter {
                    this.generateDescriptionFromTitle(wpEvent.title.rendered),
       date: this.formatDate(finalEventDate),
       time: this.extractTimeFromTitle(wpEvent.title.rendered) || this.formatTime(finalEventDate),
-      venue: venue,
+      venue: venueName,
+      venueAddress: venueInfo.address,
+      venueLatitude: venueInfo.latitude,
+      venueLongitude: venueInfo.longitude,
       ticketPrice: this.formatPrice(cost),
       image: this.getFeaturedImage(wpEvent),
       bannerImage: this.getBannerImage(wpEvent), // Nueva propiedad para el hero

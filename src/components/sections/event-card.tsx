@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Event } from "@/types";
 
 interface EventCardProps {
@@ -11,6 +12,11 @@ interface EventCardProps {
 export default function EventCard({ event }: EventCardProps) {
   const [hoveredCard, setHoveredCard] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/evento/${event.id}`);
+  };
 
   // Función para decodificar entidades HTML
   const decodeHtmlEntities = (text: string): string => {
@@ -65,9 +71,10 @@ export default function EventCard({ event }: EventCardProps) {
 
   return (
     <div
-      className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col"
+      className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col cursor-pointer"
       onMouseEnter={() => setHoveredCard(true)}
       onMouseLeave={() => setHoveredCard(false)}
+      onClick={handleCardClick}
       style={{
         transform: hoveredCard ? 'translateY(-4px) rotateY(2deg)' : 'translateY(0) rotateY(0deg)',
         boxShadow: hoveredCard ? '0 25px 50px rgba(255, 214, 10, 0.1), 0 10px 30px rgba(0, 0, 0, 0.4)' : 'none',
@@ -85,7 +92,10 @@ export default function EventCard({ event }: EventCardProps) {
           unoptimized={imageError}
           loading="lazy"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          quality={75}
+          quality={60}
+          priority={false}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         

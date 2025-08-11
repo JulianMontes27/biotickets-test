@@ -15,7 +15,7 @@ function isCacheValid(): boolean {
   return Date.now() - cacheTimestamp < CACHE_DURATION;
 }
 
-// Función para obtener eventos próximos (WordPress + fallback)
+// Función para obtener eventos próximos (Tribe API)
 export async function getUpcomingEvents(): Promise<Event[]> {
   // Si tenemos cache válido, retornarlo
   if (upcomingEventsCache && isCacheValid()) {
@@ -23,15 +23,19 @@ export async function getUpcomingEvents(): Promise<Event[]> {
   }
 
   try {
-    console.log('🔄 Fetching upcoming events from WordPress...');
-    const wordpressEvents = await eventsAdapter.getUpcomingEvents(12);
+    console.log('🔄 Fetching upcoming events from Tribe Events API...');
     
-    console.log('✅ WordPress upcoming events loaded:', wordpressEvents.length);
-    upcomingEventsCache = wordpressEvents;
+    // Limpiar cache para debugging
+    upcomingEventsCache = null;
+    
+    const tribeEvents = await tribeEventsAdapter.getUpcomingEvents(12);
+    
+    console.log('✅ Tribe Events upcoming events loaded:', tribeEvents.length);
+    upcomingEventsCache = tribeEvents;
     cacheTimestamp = Date.now();
-    return wordpressEvents;
+    return tribeEvents;
   } catch (error) {
-    console.error('❌ Error loading WordPress events:', error);
+    console.error('❌ Error loading Tribe Events upcoming events:', error);
     upcomingEventsCache = [];
     cacheTimestamp = Date.now();
     return [];
@@ -42,14 +46,22 @@ export async function getUpcomingEvents(): Promise<Event[]> {
 export async function getPastEvents(): Promise<Event[]> {
   // Si tenemos cache válido, retornarlo
   if (pastEventsCache && isCacheValid()) {
+    console.log(`🔄 Returning cached past events: ${pastEventsCache.length}`);
     return pastEventsCache;
   }
 
   try {
     console.log('🔄 Fetching past events from Tribe Events API...');
+    
+    // Limpiar cache para debugging - FORZAR NUEVA CARGA
+    pastEventsCache = null;
+    cacheTimestamp = 0;
+    console.log('🔄 Cache cleared - forcing fresh API call');
+    
     const tribeEvents = await tribeEventsAdapter.getPastEvents(50);
     
     console.log(`📊 Tribe Events past events found: ${tribeEvents.length}`);
+    
     pastEventsCache = tribeEvents;
     cacheTimestamp = Date.now();
     return tribeEvents;
