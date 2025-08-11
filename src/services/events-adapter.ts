@@ -42,7 +42,7 @@ export class EventsAdapter {
     });
   }
 
-  private formatPrice(cost: string, _symbol: string = '$'): number {
+  private formatPrice(cost: string): number {
     if (!cost || cost === '0' || cost.toLowerCase() === 'gratis' || cost.toLowerCase() === 'free') {
       return 0;
     }
@@ -104,7 +104,6 @@ export class EventsAdapter {
       const venue = await wordpressAPI.getVenue(venueId);
       if (venue) {
         const venueName = this.stripHtml(venue.title.rendered);
-        const _address = venue.meta._VenueAddress;
         const city = venue.meta._VenueCity;
         
         if (city) {
@@ -134,7 +133,6 @@ export class EventsAdapter {
     
     // Extraer precio del título si no está en meta
     const cost = wpEvent.meta?._tribe_events_cost || this.extractPriceFromTitle(wpEvent.title.rendered);
-    const symbol = wpEvent.meta?._tribe_events_cost_currency_symbol || '$';
     
     // Extraer venue del título/contenido si no está en meta
     const venue = await this.getVenueName(wpEvent.meta?._tribe_events_venue_id) || 
@@ -168,7 +166,7 @@ export class EventsAdapter {
       date: this.formatDate(finalEventDate),
       time: this.extractTimeFromTitle(wpEvent.title.rendered) || this.formatTime(finalEventDate),
       venue: venue,
-      ticketPrice: this.formatPrice(cost, symbol),
+      ticketPrice: this.formatPrice(cost),
       image: this.getFeaturedImage(wpEvent),
       bannerImage: this.getBannerImage(wpEvent), // Nueva propiedad para el hero
       category: this.getCategoryFromTitle(wpEvent.title.rendered),

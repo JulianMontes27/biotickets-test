@@ -10,7 +10,13 @@ export const upcomingEvents: Event[] = [
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     venue: 'Centro de Convenciones',
     ticketPrice: 45000,
-    slug: 'festival-musica-electronica'
+    slug: 'festival-musica-electronica',
+    status: 'upcoming',
+    featured: true,
+    tags: ['electrónica', 'festival', 'djs'],
+    organizer: 'BioTickets',
+    capacity: 5000,
+    soldTickets: 3200
   },
   {
     id: '2',
@@ -21,7 +27,13 @@ export const upcomingEvents: Event[] = [
     image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     venue: 'Estadio Municipal',
     ticketPrice: 35000,
-    slug: 'concierto-rock-nacional'
+    slug: 'concierto-rock-nacional',
+    status: 'upcoming',
+    featured: false,
+    tags: ['rock', 'nacional', 'concierto'],
+    organizer: 'BioTickets',
+    capacity: 8000,
+    soldTickets: 5500
   },
   {
     id: '3',
@@ -32,7 +44,13 @@ export const upcomingEvents: Event[] = [
     image: 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     venue: 'Teatro Nacional',
     ticketPrice: 25000,
-    slug: 'festival-jazz'
+    slug: 'festival-jazz',
+    status: 'upcoming',
+    featured: false,
+    tags: ['jazz', 'festival', 'música'],
+    organizer: 'BioTickets',
+    capacity: 1500,
+    soldTickets: 800
   },
   {
     id: '6',
@@ -43,7 +61,13 @@ export const upcomingEvents: Event[] = [
     image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     venue: 'Arena Central',
     ticketPrice: 55000,
-    slug: 'pop-latino-fest'
+    slug: 'pop-latino-fest',
+    status: 'upcoming',
+    featured: true,
+    tags: ['pop', 'latino', 'festival'],
+    organizer: 'BioTickets',
+    capacity: 10000,
+    soldTickets: 7800
   },
   {
     id: '7',
@@ -54,7 +78,13 @@ export const upcomingEvents: Event[] = [
     image: 'https://images.unsplash.com/photo-1571266028243-d220c0bb4ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     venue: 'Club Industrial',
     ticketPrice: 30000,
-    slug: 'techno-underground'
+    slug: 'techno-underground',
+    status: 'upcoming',
+    featured: false,
+    tags: ['techno', 'underground', 'electrónica'],
+    organizer: 'BioTickets',
+    capacity: 2000,
+    soldTickets: 1200
   },
   {
     id: '8',
@@ -65,7 +95,13 @@ export const upcomingEvents: Event[] = [
     image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     venue: 'Auditorio Mayor',
     ticketPrice: 40000,
-    slug: 'festival-acustico'
+    slug: 'festival-acustico',
+    status: 'upcoming',
+    featured: false,
+    tags: ['acústico', 'cantautores', 'festival'],
+    organizer: 'BioTickets',
+    capacity: 3000,
+    soldTickets: 2100
   }
 ];
 
@@ -80,7 +116,13 @@ export const pastEvents: Event[] = [
     venue: 'Coliseo Mayor',
     ticketPrice: 50000,
     isPastEvent: true,
-    slug: 'reggaeton-fest-2024'
+    slug: 'reggaeton-fest-2024',
+    status: 'past',
+    featured: false,
+    tags: ['reggaetón', 'festival', 'urbano'],
+    organizer: 'BioTickets',
+    capacity: 12000,
+    soldTickets: 11500
   },
   {
     id: '5',
@@ -92,7 +134,13 @@ export const pastEvents: Event[] = [
     venue: 'Club Nocturno',
     ticketPrice: 20000,
     isPastEvent: true,
-    slug: 'festival-indie-rock'
+    slug: 'festival-indie-rock',
+    status: 'past',
+    featured: false,
+    tags: ['indie', 'rock', 'alternativo'],
+    organizer: 'BioTickets',
+    capacity: 1000,
+    soldTickets: 850
   },
   {
     id: '9',
@@ -104,7 +152,13 @@ export const pastEvents: Event[] = [
     venue: 'Parque de la Música',
     ticketPrice: 42000,
     isPastEvent: true,
-    slug: 'urban-beats-festival'
+    slug: 'urban-beats-festival',
+    status: 'past',
+    featured: false,
+    tags: ['hip-hop', 'trap', 'urbano'],
+    organizer: 'BioTickets',
+    capacity: 6000,
+    soldTickets: 5200
   },
   {
     id: '10',
@@ -116,7 +170,13 @@ export const pastEvents: Event[] = [
     venue: 'Casa de la Música',
     ticketPrice: 28000,
     isPastEvent: true,
-    slug: 'salsa-bachata-night'
+    slug: 'salsa-bachata-night',
+    status: 'past',
+    featured: false,
+    tags: ['salsa', 'bachata', 'latino'],
+    organizer: 'BioTickets',
+    capacity: 2500,
+    soldTickets: 2300
   },
   {
     id: '11',
@@ -128,7 +188,13 @@ export const pastEvents: Event[] = [
     venue: 'Venue Underground',
     ticketPrice: 38000,
     isPastEvent: true,
-    slug: 'metal-apocalypse'
+    slug: 'metal-apocalypse',
+    status: 'past',
+    featured: false,
+    tags: ['metal', 'rock', 'extremo'],
+    organizer: 'BioTickets',
+    capacity: 1800,
+    soldTickets: 1600
   },
   {
     id: '12',
@@ -140,6 +206,12 @@ export const pastEvents: Event[] = [
     venue: 'Plaza de Eventos',
     ticketPrice: 32000,
     isPastEvent: true,
-    slug: 'cumbia-fest'
+    slug: 'cumbia-fest',
+    status: 'past',
+    featured: false,
+    tags: ['cumbia', 'latino', 'tradicional'],
+    organizer: 'BioTickets',
+    capacity: 4000,
+    soldTickets: 3500
   }
 ];
