@@ -78,12 +78,14 @@ export class EventsAdapter {
 
   private getBannerImage(wpEvent: WordPressEvent): string {
     // Intentar obtener la imagen de banner desde _embedded (imagen destacada en tamaño completo)
-    if (wpEvent._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.large?.source_url) {
-      return wpEvent._embedded['wp:featuredmedia'][0].media_details.sizes.large.source_url;
+    const featuredMedia = wpEvent._embedded?.['wp:featuredmedia']?.[0];
+    
+    if (featuredMedia?.media_details?.sizes?.large?.source_url) {
+      return featuredMedia.media_details.sizes.large.source_url;
     }
     
-    if (wpEvent._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
-      return wpEvent._embedded['wp:featuredmedia'][0].source_url;
+    if (featuredMedia?.source_url) {
+      return featuredMedia.source_url;
     }
     
     // Fallback para banner específico del evento
