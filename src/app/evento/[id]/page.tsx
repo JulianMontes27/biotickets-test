@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, MapPin, Clock, Users, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Clock, Tag } from 'lucide-react';
 import { eventsAdapter } from '@/services/events-adapter';
 import { tribeEventsAdapter } from '@/services/tribe-events-adapter';
 import EventPurchaseButton from '@/components/ui/event-purchase-button';
@@ -13,9 +13,9 @@ export const revalidate = 3600;
 export const dynamic = 'force-static';
 
 interface EventPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Generate static params for better performance
@@ -40,7 +40,8 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
-  const event = await getEventDetails(params.id);
+  const { id } = await params;
+  const event = await getEventDetails(id);
   
   if (!event) {
     return {
@@ -88,7 +89,8 @@ async function getEventDetails(id: string) {
 }
 
 export default async function EventDetailPage({ params }: EventPageProps) {
-  const event = await getEventDetails(params.id);
+  const { id } = await params;
+  const event = await getEventDetails(id);
 
   if (!event) {
     notFound();

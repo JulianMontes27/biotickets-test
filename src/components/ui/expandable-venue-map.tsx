@@ -39,8 +39,8 @@ export default function ExpandableVenueMap({ imageUrl, venue }: ExpandableVenueM
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 pt-20" onClick={closeModal}>
-          <div className="relative max-w-7xl max-h-[80vh] w-full h-full flex items-center justify-center">
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center" onClick={closeModal}>
+          <div className="relative w-full h-full flex items-center justify-center">
             {/* Close button */}
             <button
               onClick={closeModal}

@@ -8,7 +8,6 @@ interface EventPurchaseButtonProps {
 
 export default function EventPurchaseButton({ 
   eventLink, 
-  ticketPrice, 
   isUpcoming 
 }: EventPurchaseButtonProps) {
   const handlePurchase = () => {
