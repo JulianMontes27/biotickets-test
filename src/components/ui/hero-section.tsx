@@ -26,8 +26,6 @@ export default function HeroSection() {
           imageUrl: "https://www.biotickets.com/wp-content/uploads/2025/07/Banner_-Kris_-1920-scaled.jpg",
           title: "KRISR U.V.E.S LIVE"
         });
-      } catch (error) {
-        console.error('Load banner error:', error);
       }
     };
 
