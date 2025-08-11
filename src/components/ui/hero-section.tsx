@@ -1,57 +1,18 @@
-"use client";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import { heroBannerService } from "@/services/hero-banner-service";
+import HeroImage from "./hero-image";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { ArrowRight, ChevronDown, Loader2 } from "lucide-react";
-import { heroBannerService, HeroBanner } from "@/services/hero-banner-service";
-
-export default function HeroSection() {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [heroBanner, setHeroBanner] = useState<HeroBanner | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadHeroBanner = async () => {
-      try {
-        const banner = await heroBannerService.getMainHeroBanner();
-        setHeroBanner(banner);
-      } catch (error) {
-        console.error('Error loading hero banner:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadHeroBanner();
-  }, []);
-
-
-  // Si estamos cargando, mostrar un estado de carga
-  if (loading) {
-    return (
-      <section className="relative h-screen max-w-full bg-black overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
-        <div className="relative z-10 h-full flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="animate-spin mx-auto mb-4 text-indigo-400" size={48} />
-            <p className="text-white text-xl">Cargando banner principal...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+export default async function HeroSection() {
+  // Fetch data on the server
+  const heroBanner = await heroBannerService.getMainHeroBanner();
 
   return (
     <section className="relative h-screen max-w-full bg-black overflow-hidden">
       {/* Full Screen Image */}
       <div className="absolute inset-0">
-        <Image
+        <HeroImage
           src={heroBanner?.imageUrl || "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3"}
           alt={heroBanner?.title || "BioTickets Banner"}
-          fill
-          className={`object-cover transition-opacity duration-1000 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={() => setImageLoaded(true)}
-          priority
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/40" />

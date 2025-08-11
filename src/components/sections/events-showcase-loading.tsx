@@ -1,14 +1,6 @@
-import { getUpcomingEvents, getPastEvents } from "@/data/events-data";
-import EventsCarousel from "./events-carousel";
+import { Loader2 } from "lucide-react";
 
-export default async function EventsShowcase() {
-  // Fetch events on the server
-  const [upcomingEvents, pastEvents] = await Promise.all([
-    getUpcomingEvents(),
-    getPastEvents()
-  ]);
-
-
+export default function EventsShowcaseLoading() {
   return (
     <section className="py-12 sm:py-16 md:py-20 lg:py-32 xl:py-40 bg-black overflow-hidden">
       <div className="container mx-auto px-4">
@@ -22,11 +14,13 @@ export default async function EventsShowcase() {
           </p>
         </div>
 
-        {/* Events Carousel Component */}
-        <EventsCarousel 
-          upcomingEvents={upcomingEvents}
-          pastEvents={pastEvents}
-        />
+        {/* Loading State */}
+        <div className="flex justify-center items-center py-20">
+          <div className="flex items-center space-x-3 text-indigo-400">
+            <Loader2 className="animate-spin" size={24} />
+            <span className="text-lg">Cargando eventos...</span>
+          </div>
+        </div>
       </div>
     </section>
   );
