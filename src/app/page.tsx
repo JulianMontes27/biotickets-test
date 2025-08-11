@@ -6,8 +6,14 @@ import EventsShowcaseLoading from "@/components/sections/events-showcase-loading
 import ArtistTracker from "@/components/sections/artist-tracker";
 import AboutUs from "@/components/sections/about-us";
 
+// Enable ISR with 1 hour revalidation
+// This reduces function invocations from every request to once per hour
+export const revalidate = 3600; // 1 hour in seconds
+
+// Force static generation at build time
+export const dynamic = 'force-static';
+
 export default function Home() {
-  // console.log('server')
   return (
     <div>
       <Suspense fallback={<HeroSectionLoading />}>

@@ -8,7 +8,7 @@ import { tribeEventsAdapter } from '@/services/tribe-events-adapter';
 let upcomingEventsCache: Event[] | null = null;
 let pastEventsCache: Event[] | null = null;
 let cacheTimestamp: number = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour to reduce API calls
 
 // Función para verificar si el cache es válido
 function isCacheValid(): boolean {

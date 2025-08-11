@@ -11,6 +11,7 @@ interface EventCardProps {
 
 export default function EventCard({ event }: EventCardProps) {
   const [hoveredCard, setHoveredCard] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
 
   const formatDate = (dateString: string) => {
     if (!dateString) {
@@ -74,10 +75,15 @@ export default function EventCard({ event }: EventCardProps) {
       {/* Event Image */}
       <div className="relative aspect-square overflow-hidden bg-black">
         <Image
-          src={event.image}
+          src={imageError ? 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3' : event.image}
           alt={event.title}
           fill
           className="object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
+          onError={() => setImageError(true)}
+          unoptimized={imageError}
+          loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={75}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         

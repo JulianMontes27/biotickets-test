@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Event } from "@/types";
 import { cn } from "@/lib/utils";
+import SafeImage from "@/components/ui/safe-image";
 
 interface EventCardProps {
   event: Event;
@@ -33,7 +33,7 @@ export default function EventCard({ event, className }: EventCardProps) {
       className
     )}>
       <div className="relative h-48 sm:h-56 overflow-hidden">
-        <Image
+        <SafeImage
           src={event.image}
           alt={event.title}
           fill

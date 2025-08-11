@@ -234,8 +234,11 @@ class WordPressAPI {
         headers: {
           'Accept': 'application/json',
         },
-        // Agregar cache para mejorar performance
-        next: { revalidate: 300 } // 5 minutos
+        // Longer cache duration to reduce Fast Origin Transfer
+        next: { revalidate: 86400 }, // 24 hours
+        headers: {
+          'Cache-Control': 's-maxage=86400, stale-while-revalidate=604800',
+        }
       });
 
       if (!response.ok) {

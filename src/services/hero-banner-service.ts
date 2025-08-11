@@ -33,7 +33,7 @@ class HeroBannerService {
         headers: {
           'Accept': 'application/json',
         },
-        next: { revalidate: 300 } // 5 minutos de cache
+        next: { revalidate: 86400 } // 24 hours cache to reduce costs
       });
 
       if (!response.ok) {

@@ -11,13 +11,19 @@ import {
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "600"], // Reduced weights to save bandwidth
+  display: 'swap', // Better performance
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-jetbrains-mono", 
+  weight: ["400"], // Only essential weight
+  display: 'swap',
+  preload: false, // Don't preload secondary font
+  fallback: ['monospace'],
 });
 
 export const metadata: Metadata = {
