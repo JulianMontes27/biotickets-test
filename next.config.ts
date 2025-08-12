@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         hostname: 'www.biotickets.com',
         pathname: '/wp-content/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'jtfcfsnksywotlbsddqb.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 828, 1200, 1920], // Reduced sizes to optimize bandwidth

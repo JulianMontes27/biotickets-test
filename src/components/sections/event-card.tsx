@@ -77,7 +77,7 @@ export default function EventCard({ event }: EventCardProps) {
       onClick={handleCardClick}
       style={{
         transform: hoveredCard ? 'translateY(-4px) rotateY(2deg)' : 'translateY(0) rotateY(0deg)',
-        boxShadow: hoveredCard ? '0 25px 50px rgba(255, 214, 10, 0.1), 0 10px 30px rgba(0, 0, 0, 0.4)' : 'none',
+        boxShadow: hoveredCard ? '0 25px 50px rgba(99, 102, 241, 0.15), 0 10px 30px rgba(168, 85, 247, 0.1)' : 'none',
         height: '480px'
       }}
     >

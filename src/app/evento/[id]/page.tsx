@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, MapPin, Clock, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
 import { eventsAdapter } from '@/services/events-adapter';
 import { tribeEventsAdapter } from '@/services/tribe-events-adapter';
 import EventPurchaseButton from '@/components/ui/event-purchase-button';
@@ -100,15 +100,30 @@ export default async function EventDetailPage({ params }: EventPageProps) {
     <div className="min-h-screen bg-black text-white">
       {/* Hero Section */}
       <div className="relative h-[70vh] overflow-hidden">
-        <Image
-          src={event.bannerImage || event.image}
-          alt={event.title}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-          quality={75}
-        />
+        {/* Mobile Image - Square */}
+        <div className="absolute inset-0 md:hidden">
+          <Image
+            src={event.image}
+            alt={event.title}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+            quality={75}
+          />
+        </div>
+        {/* Desktop Image - Banner */}
+        <div className="absolute inset-0 hidden md:block">
+          <Image
+            src={event.bannerImage || event.image}
+            alt={event.title}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+            quality={75}
+          />
+        </div>
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
         
@@ -145,10 +160,6 @@ export default async function EventDetailPage({ params }: EventPageProps) {
               <div className="flex items-center gap-2">
                 <Clock size={18} />
                 <span>{event.time}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin size={18} />
-                <span>{event.venue}</span>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Event } from "@/types";
 import EventCard from "./event-card";
@@ -155,17 +156,16 @@ export default function EventsCarousel({ upcomingEvents, pastEvents }: EventsCar
 
       {/* CTA Button */}
       <div className="flex justify-center mt-8 sm:mt-12 md:mt-16">
-        <button 
-          className="group px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm sm:text-base font-medium transition-all duration-300 rounded-full shadow-lg hover:from-indigo-500 hover:to-purple-500"
+        <Link 
+          href="/eventos"
+          className="group px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm sm:text-base font-medium transition-all duration-300 rounded-full shadow-lg hover:from-indigo-500 hover:to-purple-500 inline-flex items-center gap-2"
           style={{
             boxShadow: '0 10px 30px rgba(99, 102, 241, 0.3)'
           }}
         >
-          <span className="flex items-center gap-2">
-            Ver Todos los Eventos
-            <ArrowRight className="group-hover:translate-x-1 transition-transform" size={16} />
-          </span>
-        </button>
+          Ver Todos los Eventos
+          <ArrowRight className="group-hover:translate-x-1 transition-transform" size={16} />
+        </Link>
       </div>
     </>
   );

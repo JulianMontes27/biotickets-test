@@ -228,7 +228,7 @@ export default function ArtistTracker() {
   };
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 lg:py-32 xl:py-40 bg-black overflow-hidden">
+    <section id="wallet" className="py-16 sm:py-20 md:py-24 lg:py-32 xl:py-40 bg-black overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 md:gap-20 lg:gap-24 xl:gap-32 items-center">
           {/* Left Content */}

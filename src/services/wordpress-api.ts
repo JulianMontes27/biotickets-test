@@ -1,5 +1,5 @@
-const WORDPRESS_API_BASE = 'https://www.biotickets.com/wp-json/wp/v2';
-const TRIBE_EVENTS_API_BASE = 'https://www.biotickets.com/wp-json/tribe/events/v1';
+const WORDPRESS_API_BASE = process.env.WORDPRESS_API_BASE || 'https://www.biotickets.com/wp-json/wp/v2';
+const TRIBE_EVENTS_API_BASE = process.env.TRIBE_API_BASE || 'https://www.biotickets.com/wp-json/tribe/events/v1';
 
 export interface WordPressEvent {
   id: number;
@@ -231,25 +231,54 @@ export interface TribeEvent {
 
 class WordPressAPI {
   private async fetchWithErrorHandling<T>(url: string): Promise<T> {
-    try {
-      const response = await fetch(url, {
-        headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 's-maxage=86400, stale-while-revalidate=604800',
-        },
-        // Longer cache duration to reduce Fast Origin Transfer
-        next: { revalidate: 86400 }, // 24 hours
-      });
+    const maxRetries = 3;
+    let lastError: Error;
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+        const response = await fetch(url, {
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 's-maxage=86400, stale-while-revalidate=604800',
+            'User-Agent': 'BioTickets-App/1.0',
+          },
+          signal: controller.signal,
+          // Longer cache duration to reduce Fast Origin Transfer
+          next: { revalidate: 86400 }, // 24 hours
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        lastError = error as Error;
+        console.error(`API fetch attempt ${attempt}/${maxRetries} failed:`, {
+          url,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          attempt
+        });
+
+        if (attempt === maxRetries) {
+          break;
+        }
+
+        // Wait before retry (exponential backoff)
+        const waitTime = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
       }
-
-      return await response.json();
-    } catch (error) {
-      console.error(`Error fetching from ${url}:`, error);
-      throw error;
     }
+
+    // Return empty array or default value instead of throwing
+    console.error(`All ${maxRetries} attempts failed for URL: ${url}`);
+    return [] as unknown as T;
   }
 
   async getEvents(params: {

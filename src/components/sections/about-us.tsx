@@ -27,7 +27,7 @@ export default function AboutUs() {
   ];
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 lg:py-32 xl:py-40 bg-black relative overflow-hidden">
+    <section id="nosotros" className="py-16 sm:py-20 md:py-24 lg:py-32 xl:py-40 bg-black relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-20 left-10 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-400 rounded-full blur-3xl animate-pulse" />

@@ -38,7 +38,7 @@ export default async function HeroSection() {
       </div>
 
       {/* Minimal Content */}
-      <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-6 md:p-8 lg:p-16 pb-24 sm:pb-32 md:pb-40 lg:pb-48">
+      <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-6 md:p-8 lg:p-16 pb-40 sm:pb-48 md:pb-56 lg:pb-64">
         
 
         {/* Mobile Featured Image - Only on mobile */}
@@ -47,9 +47,9 @@ export default async function HeroSection() {
             <Image 
               src="https://www.biotickets.com/wp-content/uploads/elementor/thumbs/Banner_-Kris_-640-1-r8fg73hxfl1jrs83v93kgygr17mmd3ptcky6gdinc0.jpg"
               alt="KRISR Banner Mobile"
-              width={320}
-              height={320}
-              className="w-80 h-80 sm:w-96 sm:h-96 object-cover rounded-2xl shadow-2xl border border-white/20"
+              width={384}
+              height={384}
+              className="w-96 h-96 sm:w-[26rem] sm:h-[26rem] object-cover rounded-2xl shadow-2xl border border-white/20"
               loading="lazy"
             />
             {/* Mobile image overlay */}
@@ -86,14 +86,14 @@ export default async function HeroSection() {
           {/* CTA Buttons - 3D Style */}
           <HeroButtons />
         </div>
+      </div>
 
-        {/* Bottom Section - Scroll Indicator */}
-        <div className="flex justify-center mt-8 sm:mt-12">
-          {/* Scroll Indicator */}
-          <div className="flex flex-col items-center animate-bounce">
-            <span className="text-white/60 text-[10px] sm:text-xs font-mono mb-2 sm:mb-3 tracking-[0.2em] sm:tracking-[0.25em] leading-relaxed">DESCUBRE MÁS</span>
-            <ChevronDown className="text-white/60" size={20} />
-          </div>
+      {/* Bottom Section - Scroll Indicator - Positioned absolutely */}
+      <div className="absolute bottom-8 sm:bottom-12 left-0 right-0 z-20 flex justify-center">
+        {/* Scroll Indicator */}
+        <div className="flex flex-col items-center animate-bounce">
+          <span className="text-white/60 text-[10px] sm:text-xs font-mono mb-2 sm:mb-3 tracking-[0.2em] sm:tracking-[0.25em] leading-relaxed">DESCUBRE MÁS</span>
+          <ChevronDown className="text-white/60" size={20} />
         </div>
       </div>
     </section>
