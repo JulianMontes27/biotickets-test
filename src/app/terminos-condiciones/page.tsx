@@ -64,7 +64,7 @@ export default function TerminosCondiciones() {
             {/* Introduction */}
             <div className="mb-8">
               <p className="text-zinc-300 leading-relaxed">
-                Al aceptar los Términos y Condiciones del Servicio de Compraventa de Boletería (en adelante los «T&C»), el Comprador y BIOTIOCKETS SAS (en adelante "BIOTIOCKETS") se obligan en los siguientes términos:
+                Al aceptar los Términos y Condiciones del Servicio de Compraventa de Boletería (en adelante los «T&C»), el Comprador y BIOTIOCKETS SAS (en adelante &quot;BIOTIOCKETS&quot;) se obligan en los siguientes términos:
               </p>
             </div>
 

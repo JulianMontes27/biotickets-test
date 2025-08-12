@@ -259,10 +259,11 @@ class WordPressAPI {
         const data = await response.json();
         return data;
       } catch (error) {
-        lastError = error as Error;
+        const currentError = error as Error;
+        lastError = currentError;
         console.error(`API fetch attempt ${attempt}/${maxRetries} failed:`, {
           url,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: currentError instanceof Error ? currentError.message : 'Unknown error',
           attempt
         });
 
