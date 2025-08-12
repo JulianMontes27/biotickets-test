@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react'],
