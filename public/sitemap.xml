@@ -1,0 +1,12 @@
+<!-- Homepage - highest priority -->
+<url><loc>https://www.biotickets.com</loc><priority>1.0</priority><changefreq>daily</changefreq></url>
+
+<!-- Main sections - high priority -->
+<url><loc>https://www.biotickets.com/eventos</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+
+<!-- Individual events - medium-high priority -->
+<url><loc>https://www.biotickets.com/evento/1196</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+
+<!-- Legal pages - lower priority, less frequent changes -->
+<url><loc>https://www.biotickets.com/politica-tratamiento-datos</loc><priority>0.3</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://www.biotickets.com/terminos-condiciones</loc><priority>0.3</priority><changefreq>monthly</changefreq></url>

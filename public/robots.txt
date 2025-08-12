@@ -1,7 +1,12 @@
+# *
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api
 Disallow: /private
 
+# Host
+Host: https://www.biotickets.com
+
+# Sitemaps
 Sitemap: https://www.biotickets.com/sitemap.xml
