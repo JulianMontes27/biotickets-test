@@ -28,22 +28,21 @@ export default function EventCard({ event }: EventCardProps) {
       return 'ENE 1';
     }
     
-    let date = new Date(dateString);
+    let date: Date;
     
-    // Si la fecha no es válida, intentar parsear diferentes formatos
-    if (isNaN(date.getTime())) {
-      // Intentar formato DD/MM/YYYY
-      const dateParts = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-      if (dateParts) {
-        const [, day, month, year] = dateParts;
-        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        date = new Date(); // Fallback to current date
-      }
+    // First, try to parse DD/MM/YYYY format directly (most reliable)
+    const dateParts = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (dateParts) {
+      const [, day, month, year] = dateParts;
+      date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    } else {
+      // Fallback to standard Date parsing
+      date = new Date(dateString);
     }
     
     // Verificar que la fecha sea válida después del parsing
     if (isNaN(date.getTime())) {
+      console.warn('Invalid date string:', dateString);
       return 'ENE 1';
     }
     

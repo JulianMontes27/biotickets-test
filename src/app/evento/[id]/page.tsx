@@ -1,14 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
+import { Calendar, Clock, Tag } from "lucide-react";
 import { tribeEventsAdapter } from "@/services/tribe-events-adapter";
 import EventPurchaseButton from "@/components/ui/event-purchase-button";
 import ExpandableVenueMap from "@/components/ui/expandable-venue-map";
-
-// Enable ISR for better caching
-export const revalidate = 3600; // 1 hour
+import BackButton from "@/components/ui/back-button";
 
 interface EventPageProps {
   params: Promise<{
@@ -16,28 +13,13 @@ interface EventPageProps {
   }>;
 }
 
-// Cache to prevent duplicate calls between generateMetadata and component
-const eventDetailsCache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
 // Efficient function to get event details by ID with request-level caching
 async function getEventDetails(id: string) {
   // Check request-level cache first
-  const cached = eventDetailsCache.get(id);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    return cached.data;
-  }
-
   try {
     // Use the efficient getEventById method instead of fetching all events
     const event = await tribeEventsAdapter.getEventById(id);
-    
-    // Cache the result for this request
-    eventDetailsCache.set(id, {
-      data: event,
-      timestamp: Date.now()
-    });
-    
+
     return event;
   } catch (error) {
     console.error("Error fetching event details:", error);
@@ -117,17 +99,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
 
         {/* Back Button */}
-        <div className="absolute top-6 left-0 right-0 z-10">
-          <div className="container mx-auto px-6">
-            <Link
-              href="/"
-              className="flex items-center gap-2 px-4 py-2 bg-black/50 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/70 transition-all duration-300 w-fit"
-            >
-              <ArrowLeft size={18} />
-              <span className="text-sm font-medium">Volver</span>
-            </Link>
-          </div>
-        </div>
+        <BackButton />
 
         {/* Event Title and Basic Info */}
         <div className="absolute bottom-16 left-0 right-0">

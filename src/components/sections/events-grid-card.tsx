@@ -17,19 +17,22 @@ export default function EventsGridCard({ event }: EventsGridCardProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return 'ENE 1';
     
-    let date = new Date(dateString);
+    let date: Date;
     
-    if (isNaN(date.getTime())) {
-      const dateParts = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-      if (dateParts) {
-        const [, day, month, year] = dateParts;
-        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        date = new Date();
-      }
+    // First, try to parse DD/MM/YYYY format directly (most reliable)
+    const dateParts = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (dateParts) {
+      const [, day, month, year] = dateParts;
+      date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    } else {
+      // Fallback to standard Date parsing
+      date = new Date(dateString);
     }
     
-    if (isNaN(date.getTime())) return 'ENE 1';
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date string:', dateString);
+      return 'ENE 1';
+    }
     
     const monthNames = {
       0: 'ENE', 1: 'FEB', 2: 'MAR', 3: 'ABR', 4: 'MAY', 5: 'JUN',

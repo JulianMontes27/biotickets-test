@@ -74,6 +74,7 @@ export default function RootLayout({
           }}
         />
       </head>
+      
       <body
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased overflow-x-hidden`}
       >
