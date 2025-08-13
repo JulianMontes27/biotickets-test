@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import HeroSection from "@/components/ui/hero-section";
 import HeroSectionLoading from "@/components/ui/hero-section-loading";
 import EventsShowcase from "@/components/sections/events-showcase";
-import EventsShowcaseLoading from "@/components/sections/events-showcase-loading";
 import ArtistTracker from "@/components/sections/artist-tracker";
 import AboutUs from "@/components/sections/about-us";
 
@@ -10,18 +9,14 @@ import AboutUs from "@/components/sections/about-us";
 // This reduces function invocations from every request to once per hour
 export const revalidate = 3600; // 1 hour in seconds
 
-// Force static generation at build time
-export const dynamic = 'force-static';
-
 export default function Home() {
   return (
     <div>
       <Suspense fallback={<HeroSectionLoading />}>
         <HeroSection />
       </Suspense>
-      <Suspense fallback={<EventsShowcaseLoading />}>
-        <EventsShowcase />
-      </Suspense>
+      <EventsShowcase />
+
       <ArtistTracker />
       <AboutUs />
     </div>

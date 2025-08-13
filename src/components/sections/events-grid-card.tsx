@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Event } from "@/types";
 import { Calendar } from "lucide-react";
 
@@ -13,11 +13,6 @@ interface EventsGridCardProps {
 export default function EventsGridCard({ event }: EventsGridCardProps) {
   const [hoveredCard, setHoveredCard] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
-  const router = useRouter();
-
-  const handleCardClick = () => {
-    router.push(`/evento/${event.id}`);
-  };
 
   const formatDate = (dateString: string) => {
     if (!dateString) return 'ENE 1';
@@ -61,17 +56,17 @@ export default function EventsGridCard({ event }: EventsGridCardProps) {
   };
 
   return (
-    <div
-      className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col cursor-pointer"
-      onMouseEnter={() => setHoveredCard(true)}
-      onMouseLeave={() => setHoveredCard(false)}
-      onClick={handleCardClick}
-      style={{
-        transform: hoveredCard ? 'translateY(-4px)' : 'translateY(0)',
-        boxShadow: hoveredCard ? '0 20px 40px rgba(99, 102, 241, 0.1), 0 8px 24px rgba(168, 85, 247, 0.08)' : 'none',
-        height: '390px' // Compact size for grid efficiency
-      }}
-    >
+    <Link href={`/evento/${event.id}`} className="block">
+      <div
+        className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col cursor-pointer"
+        onMouseEnter={() => setHoveredCard(true)}
+        onMouseLeave={() => setHoveredCard(false)}
+        style={{
+          transform: hoveredCard ? 'translateY(-4px)' : 'translateY(0)',
+          boxShadow: hoveredCard ? '0 20px 40px rgba(99, 102, 241, 0.1), 0 8px 24px rgba(168, 85, 247, 0.08)' : 'none',
+          height: '390px' // Compact size for grid efficiency
+        }}
+      >
       {/* Event Image - Optimized for bandwidth */}
       <div className="relative overflow-hidden bg-black flex-shrink-0" style={{ width: '100%', height: '280px' }}>
         <Image
@@ -121,6 +116,7 @@ export default function EventsGridCard({ event }: EventsGridCardProps) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </Link>
   );
 }

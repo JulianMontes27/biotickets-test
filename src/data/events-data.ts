@@ -23,14 +23,11 @@ export async function getUpcomingEvents(): Promise<Event[]> {
   }
 
   try {
-    console.log('🔄 Fetching upcoming events from Tribe Events API...');
-    
     // Limpiar cache para debugging
     upcomingEventsCache = null;
     
     const tribeEvents = await tribeEventsAdapter.getUpcomingEvents(12);
     
-    console.log('✅ Tribe Events upcoming events loaded:', tribeEvents.length);
     upcomingEventsCache = tribeEvents;
     cacheTimestamp = Date.now();
     return tribeEvents;
@@ -46,25 +43,26 @@ export async function getUpcomingEvents(): Promise<Event[]> {
 export async function getPastEvents(): Promise<Event[]> {
   // Si tenemos cache válido, retornarlo
   if (pastEventsCache && isCacheValid()) {
-    console.log(`🔄 Returning cached past events: ${pastEventsCache.length}`);
     return pastEventsCache;
   }
 
   try {
-    console.log('🔄 Fetching past events from Tribe Events API...');
-    
-    // Limpiar cache para debugging - FORZAR NUEVA CARGA
+    // Clear cache for debugging - but don't reset timestamp yet
     pastEventsCache = null;
-    cacheTimestamp = 0;
-    console.log('🔄 Cache cleared - forcing fresh API call');
     
     const tribeEvents = await tribeEventsAdapter.getPastEvents(50);
     
-    console.log(`📊 Tribe Events past events found: ${tribeEvents.length}`);
-    
-    pastEventsCache = tribeEvents;
-    cacheTimestamp = Date.now();
-    return tribeEvents;
+    // Ensure we have a valid array before caching
+    if (Array.isArray(tribeEvents)) {
+      pastEventsCache = tribeEvents;
+      cacheTimestamp = Date.now();
+      return tribeEvents;
+    } else {
+      console.warn('⚠️ getPastEvents: tribeEventsAdapter returned non-array:', typeof tribeEvents);
+      pastEventsCache = [];
+      cacheTimestamp = Date.now();
+      return [];
+    }
   } catch (error) {
     console.error('❌ Error loading Tribe Events past events:', error);
     pastEventsCache = [];

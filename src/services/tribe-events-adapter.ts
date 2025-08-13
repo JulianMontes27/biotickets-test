@@ -306,23 +306,18 @@ export class TribeEventsAdapter {
   // Método para obtener eventos pasados
   async getPastEvents(limit: number = 50): Promise<Event[]> {
     try {
-      console.log(`🔍 TribeEventsAdapter: Fetching ${limit} past events...`);
       const tribeEvents = await wordpressAPI.getTribePastEvents(limit);
-      
-      console.log(`🔍 TribeEventsAdapter: Raw API returned ${Array.isArray(tribeEvents) ? tribeEvents.length : 'not array'} events`);
       
       // Verificar que tribeEvents sea un array
       if (!Array.isArray(tribeEvents)) {
-        console.warn('TribeEventsAdapter: Expected array but got:', typeof tribeEvents, tribeEvents);
+        console.warn('TribeEventsAdapter: Expected array but got:', typeof tribeEvents);
         return [];
       }
-      
-      console.log(`🔍 TribeEventsAdapter: Sample raw event:`, tribeEvents[0] ? {
-        id: tribeEvents[0].id,
-        title: tribeEvents[0].title,
-        start_date: tribeEvents[0].start_date,
-        end_date: tribeEvents[0].end_date
-      } : 'No events');
+
+      // If no events returned, return empty array
+      if (tribeEvents.length === 0) {
+        return [];
+      }
       
       const events = this.convertMultipleEvents(tribeEvents);
       
@@ -332,32 +327,34 @@ export class TribeEventsAdapter {
         return [];
       }
       
-      console.log(`🔍 TribeEventsAdapter: Converted ${events.length} past events`);
-      console.log(`🔍 TribeEventsAdapter: Sample converted event:`, events[0] ? {
-        id: events[0].id,
-        title: events[0].title,
-        status: events[0].status,
-        date: events[0].date
-      } : 'No events');
-      
       // Ordenar manualmente del más reciente al más antiguo
-      // La API no respeta el parámetro order=desc correctamente
       const sortedEvents = events.sort((a, b) => {
         const dateA = new Date(a.startDateTime || a.date);
         const dateB = new Date(b.startDateTime || b.date);
-        return dateB.getTime() - dateA.getTime(); // desc: más reciente primero
+        return dateB.getTime() - dateA.getTime();
       });
       
-      console.log(`🔍 After sorting - First event:`, sortedEvents[0] ? {
-        title: sortedEvents[0].title,
-        date: sortedEvents[0].date,
-        startDateTime: sortedEvents[0].startDateTime
-      } : 'No events');
-      
-      return sortedEvents.slice(0, limit);
+      const finalEvents = sortedEvents.slice(0, limit);
+      return finalEvents;
     } catch (error) {
-      console.error('Error fetching past tribe events:', error);
+      console.error('❌ Error fetching past tribe events:', error);
       return [];
+    }
+  }
+
+  // Método para obtener un evento específico por ID
+  async getEventById(id: string): Promise<Event | null> {
+    try {
+      const tribeEvent = await wordpressAPI.getTribeEventById(id);
+      
+      if (!tribeEvent) {
+        return null;
+      }
+      
+      return this.convertToEvent(tribeEvent);
+    } catch (error) {
+      console.error('❌ Error fetching event by ID:', error);
+      return null;
     }
   }
 }

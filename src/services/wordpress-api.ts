@@ -403,14 +403,19 @@ class WordPressAPI {
     ).toString();
 
     const url = `${TRIBE_EVENTS_API_BASE}/events?${queryString}`;
-    console.log('🔍 Final Tribe API URL:', url);
     const response = await this.fetchWithErrorHandling<{events: TribeEvent[]}>(url);
-    console.log('🔍 Tribe API response:', {
-      eventsCount: response.events?.length || 0,
-      totalResponse: !!response,
-      hasEvents: !!response.events
-    });
     return response.events || [];
+  }
+
+  async getTribeEventById(id: string): Promise<TribeEvent | null> {
+    try {
+      const url = `${TRIBE_EVENTS_API_BASE}/events/${id}`;
+      const response = await this.fetchWithErrorHandling<TribeEvent>(url);
+      return response || null;
+    } catch (error) {
+      console.error('❌ Error fetching event by ID:', error);
+      return null;
+    }
   }
 
   async getTribeUpcomingEvents(limit: number = 12): Promise<TribeEvent[]> {
@@ -422,28 +427,78 @@ class WordPressAPI {
   }
 
   async getTribePastEvents(limit: number = 12): Promise<TribeEvent[]> {
-    // Usar formato DD/MM/YYYY que espera la API
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const currentDate = `${day}/${month}/${year}`;
-    
-    console.log('🔍 Fetching past events before:', currentDate);
-    
-    const params = {
-      per_page: limit,
-      ends_before: currentDate,
-      orderby: 'start_date' as const,
-      order: 'desc' as const
-    };
-    
-    console.log('🔍 API params:', params);
-    
-    const result = await this.getTribeEvents(params);
-    console.log('🔍 getTribeEvents returned:', Array.isArray(result) ? result.length : typeof result, 'events');
-    
-    return result;
+    try {
+      // Try multiple date formats to ensure compatibility
+      const now = new Date();
+      
+      // Try ISO format first (most standard)
+      const isoDate = now.toISOString();
+      
+      let params = {
+        per_page: limit,
+        ends_before: isoDate,
+        orderby: 'start_date' as const,
+        order: 'desc' as const
+      };
+      
+      let result = await this.getTribeEvents(params);
+      
+      // If ISO format didn't work, try DD/MM/YYYY format
+      if (!Array.isArray(result) || result.length === 0) {
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const ddmmyyyyDate = `${day}/${month}/${year}`;
+        
+        params = {
+          per_page: limit,
+          ends_before: ddmmyyyyDate,
+          orderby: 'start_date' as const,
+          order: 'desc' as const
+        };
+        
+        result = await this.getTribeEvents(params);
+      }
+      
+      // If still no results, try YYYY-MM-DD format
+      if (!Array.isArray(result) || result.length === 0) {
+        const yyyymmddDate = now.toISOString().split('T')[0];
+        
+        params = {
+          per_page: limit,
+          ends_before: yyyymmddDate,
+          orderby: 'start_date' as const,
+          order: 'desc' as const
+        };
+        
+        result = await this.getTribeEvents(params);
+      }
+      
+      // Last resort: try getting all events and filter client-side
+      if (!Array.isArray(result) || result.length === 0) {
+        const allEventsResult = await this.getTribeEvents({
+          per_page: limit * 2, // Get more to account for filtering
+          orderby: 'start_date' as const,
+          order: 'desc' as const
+        });
+        
+        if (Array.isArray(allEventsResult)) {
+          // Filter for past events client-side
+          const nowTimestamp = now.getTime();
+          const pastEvents = allEventsResult.filter(event => {
+            const eventEndDate = new Date(event.end_date);
+            return eventEndDate.getTime() < nowTimestamp;
+          }).slice(0, limit);
+          
+          return pastEvents;
+        }
+      }
+      
+      return Array.isArray(result) ? result : [];
+    } catch (error) {
+      console.error('❌ Error in getTribePastEvents:', error);
+      return [];
+    }
   }
 }
 

@@ -1,16 +1,14 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
-import { eventsAdapter } from '@/services/events-adapter';
-import { tribeEventsAdapter } from '@/services/tribe-events-adapter';
-import EventPurchaseButton from '@/components/ui/event-purchase-button';
-import ExpandableVenueMap from '@/components/ui/expandable-venue-map';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
+import { tribeEventsAdapter } from "@/services/tribe-events-adapter";
+import EventPurchaseButton from "@/components/ui/event-purchase-button";
+import ExpandableVenueMap from "@/components/ui/expandable-venue-map";
 
-// Enable ISR with 1 hour revalidation for cost optimization
-export const revalidate = 3600;
-export const dynamic = 'force-static';
+// Enable ISR for better caching
+export const revalidate = 3600; // 1 hour
 
 interface EventPageProps {
   params: Promise<{
@@ -18,35 +16,46 @@ interface EventPageProps {
   }>;
 }
 
-// Generate static params for better performance
-export async function generateStaticParams() {
+// Cache to prevent duplicate calls between generateMetadata and component
+const eventDetailsCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Efficient function to get event details by ID with request-level caching
+async function getEventDetails(id: string) {
+  // Check request-level cache first
+  const cached = eventDetailsCache.get(id);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+
   try {
-    // Get a limited number of recent events for static generation
-    const [upcomingEvents, pastEvents] = await Promise.all([
-      eventsAdapter.getUpcomingEvents(10),
-      tribeEventsAdapter.getPastEvents(10)
-    ]);
+    // Use the efficient getEventById method instead of fetching all events
+    const event = await tribeEventsAdapter.getEventById(id);
     
-    const allEvents = [...upcomingEvents, ...pastEvents];
+    // Cache the result for this request
+    eventDetailsCache.set(id, {
+      data: event,
+      timestamp: Date.now()
+    });
     
-    return allEvents.map((event) => ({
-      id: event.id,
-    }));
+    return event;
   } catch (error) {
-    console.error('Error generating static params:', error);
-    return [];
+    console.error("Error fetching event details:", error);
+    return null;
   }
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: EventPageProps): Promise<Metadata> {
   const { id } = await params;
   const event = await getEventDetails(id);
-  
+
   if (!event) {
     return {
-      title: 'Evento no encontrado - BioTickets',
-      description: 'El evento que buscas no fue encontrado.',
+      title: "Evento no encontrado - BioTickets",
+      description: "El evento que buscas no fue encontrado.",
     };
   }
 
@@ -66,26 +75,6 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
       ],
     },
   };
-}
-
-// Helper function to get event details
-async function getEventDetails(id: string) {
-  try {
-    // Try to find the event in upcoming events first (now using Tribe API)
-    const upcomingEvents = await tribeEventsAdapter.getUpcomingEvents(50);
-    let event = upcomingEvents.find(e => e.id === id);
-    
-    if (!event) {
-      // If not found, try past events
-      const pastEvents = await tribeEventsAdapter.getPastEvents(50);
-      event = pastEvents.find(e => e.id === id);
-    }
-    
-    return event || null;
-  } catch (error) {
-    console.error('Error fetching event details:', error);
-    return null;
-  }
 }
 
 export default async function EventDetailPage({ params }: EventPageProps) {
@@ -126,7 +115,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
         </div>
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-        
+
         {/* Back Button */}
         <div className="absolute top-6 left-0 right-0 z-10">
           <div className="container mx-auto px-6">
@@ -139,7 +128,6 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             </Link>
           </div>
         </div>
-
 
         {/* Event Title and Basic Info */}
         <div className="absolute bottom-16 left-0 right-0">
@@ -198,27 +186,27 @@ export default async function EventDetailPage({ params }: EventPageProps) {
                 </div>
               </div>
             )}
-
           </div>
 
           {/* Sidebar */}
           <div className="space-y-8">
-
             {/* Ticket Purchase Card */}
-            {event.status === 'upcoming' && (
+            {event.status === "upcoming" && (
               <div className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border border-indigo-500/30 rounded-2xl p-6">
-                <h3 className="text-xl font-bold mb-4 text-white">Comprar Entradas</h3>
-                <EventPurchaseButton 
+                <h3 className="text-xl font-bold mb-4 text-white">
+                  Comprar Entradas
+                </h3>
+                <EventPurchaseButton
                   eventLink={event.link}
                   ticketPrice={event.ticketPrice}
-                  isUpcoming={event.status === 'upcoming'}
+                  isUpcoming={event.status === "upcoming"}
                 />
               </div>
             )}
 
             {/* Location Map */}
             {event.venueMapImage && (
-              <ExpandableVenueMap 
+              <ExpandableVenueMap
                 imageUrl={event.venueMapImage}
                 venue={event.venue}
               />

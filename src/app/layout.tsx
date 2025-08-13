@@ -7,23 +7,24 @@ import {
   generateOrganizationSchema,
   generateWebsiteSchema,
 } from "@/lib/structured-data";
+import { Analytics } from "@vercel/analytics/next";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
   weight: ["400", "600"], // Reduced weights to save bandwidth
-  display: 'swap', // Better performance
+  display: "swap", // Better performance
   preload: true,
-  fallback: ['system-ui', 'arial'],
+  fallback: ["system-ui", "arial"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono", 
+  variable: "--font-jetbrains-mono",
   weight: ["400"], // Only essential weight
-  display: 'swap',
+  display: "swap",
   preload: false, // Don't preload secondary font
-  fallback: ['monospace'],
+  fallback: ["monospace"],
 });
 
 export const metadata: Metadata = {
@@ -73,10 +74,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased overflow-x-hidden`}>
+      <body
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased overflow-x-hidden`}
+      >
         <Header />
         <main className="min-h-screen overflow-x-hidden">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

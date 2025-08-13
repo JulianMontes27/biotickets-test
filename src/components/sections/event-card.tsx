@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Event } from "@/types";
 
 interface EventCardProps {
@@ -12,11 +12,6 @@ interface EventCardProps {
 export default function EventCard({ event }: EventCardProps) {
   const [hoveredCard, setHoveredCard] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
-  const router = useRouter();
-
-  const handleCardClick = () => {
-    router.push(`/evento/${event.id}`);
-  };
 
   // Función para decodificar entidades HTML
   const decodeHtmlEntities = (text: string): string => {
@@ -70,17 +65,17 @@ export default function EventCard({ event }: EventCardProps) {
   };
 
   return (
-    <div
-      className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col cursor-pointer"
-      onMouseEnter={() => setHoveredCard(true)}
-      onMouseLeave={() => setHoveredCard(false)}
-      onClick={handleCardClick}
-      style={{
-        transform: hoveredCard ? 'translateY(-4px) rotateY(2deg)' : 'translateY(0) rotateY(0deg)',
-        boxShadow: hoveredCard ? '0 25px 50px rgba(99, 102, 241, 0.15), 0 10px 30px rgba(168, 85, 247, 0.1)' : 'none',
-        height: '480px'
-      }}
-    >
+    <Link href={`/evento/${event.id}`} className="block">
+      <div
+        className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col cursor-pointer"
+        onMouseEnter={() => setHoveredCard(true)}
+        onMouseLeave={() => setHoveredCard(false)}
+        style={{
+          transform: hoveredCard ? 'translateY(-4px) rotateY(2deg)' : 'translateY(0) rotateY(0deg)',
+          boxShadow: hoveredCard ? '0 25px 50px rgba(99, 102, 241, 0.15), 0 10px 30px rgba(168, 85, 247, 0.1)' : 'none',
+          height: '480px'
+        }}
+      >
       {/* Event Image */}
       <div className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl" style={{ width: '100%', height: '360px' }}>
         <Image
@@ -116,6 +111,7 @@ export default function EventCard({ event }: EventCardProps) {
           {decodeHtmlEntities(event.title)}
         </h3>
       </div>
-    </div>
+      </div>
+    </Link>
   );
 }
