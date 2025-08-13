@@ -134,18 +134,26 @@ export class TribeEventsAdapter {
   private getVenueMapFromDescription(description: string): string | null {
     if (!description) return null;
     
-    // Buscar CUALQUIER imagen que contenga "Mapa" en el nombre de archivo
+    // Buscar CUALQUIER imagen que contenga palabras relacionadas con mapas/localidades
     const allImages = description.match(/src="([^"]*\.(jpg|jpeg|png)[^"]*)"/gi) || [];
+    
+    // Expanded keywords for better map detection
+    const mapKeywords = [
+      'mapa', 'map', 'localidades', 'seating', 'asientos', 'plano',
+      'layout', 'venue', 'teatro', 'coliseo', 'estadio', 'auditorio',
+      'zones', 'zonas', 'sectores', 'sectors', 'ubicaciones', 'locations'
+    ];
     
     for (const imgTag of allImages) {
       const urlMatch = imgTag.match(/src="([^"]*)"/);
       if (urlMatch && urlMatch[1]) {
-        const imageUrl = urlMatch[1];
-        // Si la URL contiene "Mapa" o "mapa", es un mapa
-        if (imageUrl.toLowerCase().includes('mapa') || 
-            imageUrl.toLowerCase().includes('localidades') ||
-            imageUrl.toLowerCase().includes('seating')) {
-          return imageUrl;
+        const imageUrl = urlMatch[1].toLowerCase();
+        
+        // Check if the URL contains any map-related keyword
+        const hasMapKeyword = mapKeywords.some(keyword => imageUrl.includes(keyword));
+        
+        if (hasMapKeyword) {
+          return urlMatch[1]; // Return original URL (not lowercase)
         }
       }
     }
