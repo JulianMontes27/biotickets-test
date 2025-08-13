@@ -58,8 +58,14 @@ export default function EventsGridCard({ event }: EventsGridCardProps) {
     return text.replace(/&#8211;/g, '–').replace(/&#8212;/g, '—');
   };
 
+  // Check if this is a "Perro negro" event and redirect to external domain
+  const isPerroNegro = event.title.toLowerCase().includes('perro negro');
+  const href = isPerroNegro ? 'https://perronegro.biotickets.com/' : `/evento/${event.id}`;
+  const linkTarget = isPerroNegro ? "_blank" : undefined;
+  const linkRel = isPerroNegro ? "noopener noreferrer" : undefined;
+
   return (
-    <Link href={`/evento/${event.id}`} className="block">
+    <Link href={href} target={linkTarget} rel={linkRel} className="block">
       <div
         className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500 flex flex-col cursor-pointer"
         onMouseEnter={() => setHoveredCard(true)}
