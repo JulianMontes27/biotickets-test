@@ -4,7 +4,7 @@ export interface Event {
   description: string;
   date: string;
   time: string;
-  image: string;
+  image: string | null;
   bannerImage?: string; // Nueva propiedad para imagen de banner del hero
   venue: string;
   venueAddress?: string; // Dirección completa del venue
@@ -13,7 +13,7 @@ export interface Event {
   venueMapImage?: string; // Imagen del mapa de localidades del venue
   ticketPrice: number;
   category?: string;
-  status: 'upcoming' | 'past';
+  status: "upcoming" | "past";
   featured: boolean;
   tags: string[];
   organizer: string;

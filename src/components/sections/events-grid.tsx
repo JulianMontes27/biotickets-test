@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Event } from "@/types";
 import EventsGridCard from "./events-grid-card";
 
@@ -14,13 +14,16 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 12;
+  const [allPastEvents, setAllPastEvents] = useState<Event[]>(pastEvents);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMorePastEvents, setHasMorePastEvents] = useState(true);
 
   // Debug logs
   console.log('EventsGrid - upcomingEvents:', upcomingEvents?.length || 0);
   console.log('EventsGrid - pastEvents:', pastEvents?.length || 0);
 
   // Get current events based on active tab
-  const currentEvents = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
+  const currentEvents = activeTab === 'upcoming' ? upcomingEvents : allPastEvents;
   
   // Calculate pagination
   const totalPages = Math.ceil(currentEvents.length / eventsPerPage);
@@ -55,6 +58,34 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
     setCurrentPage(1);
   };
 
+  // Load more past events
+  const loadMorePastEvents = async () => {
+    if (isLoadingMore || !hasMorePastEvents || activeTab !== 'past') return;
+    
+    setIsLoadingMore(true);
+    try {
+      const nextPage = Math.floor(allPastEvents.length / 12) + 1;
+      const response = await fetch(`/api/events/past?page=${nextPage}&limit=12`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch events');
+      }
+      
+      const data = await response.json();
+      
+      if (data.events.length === 0) {
+        setHasMorePastEvents(false);
+      } else {
+        setAllPastEvents(prev => [...prev, ...data.events]);
+        setHasMorePastEvents(data.hasMore);
+      }
+    } catch (error) {
+      console.error('Error loading more past events:', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4">
       {/* Tabs */}
@@ -79,7 +110,7 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
                 : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
-            PASADOS ({pastEvents.length})
+            PASADOS ({allPastEvents.length})
           </button>
         </div>
       </div>
@@ -123,8 +154,28 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
+          {/* Progressive Loading for Past Events */}
+          {activeTab === 'past' && hasMorePastEvents && (
+            <div className="text-center mt-8">
+              <button
+                onClick={loadMorePastEvents}
+                disabled={isLoadingMore}
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoadingMore ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    Cargando...
+                  </>
+                ) : (
+                  'Cargar Más Eventos'
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* Traditional Pagination for Upcoming Events */}
+          {activeTab === 'upcoming' && totalPages > 1 && (
             <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
               {/* Page Info */}
               <div className="text-zinc-400 text-sm">

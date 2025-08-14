@@ -15,7 +15,6 @@ interface EventPageProps {
 
 // Efficient function to get event details by ID with request-level caching
 async function getEventDetails(id: string) {
-  // Check request-level cache first
   try {
     // Use the efficient getEventById method instead of fetching all events
     const event = await tribeEventsAdapter.getEventById(id);
@@ -49,7 +48,7 @@ export async function generateMetadata({
       description: event.description,
       images: [
         {
-          url: event.image,
+          url: typeof event.image === "string" ? event.image : "",
           width: 1200,
           height: 630,
           alt: event.title,
@@ -73,27 +72,31 @@ export default async function EventDetailPage({ params }: EventPageProps) {
       <div className="relative h-[70vh] overflow-hidden">
         {/* Mobile Image - Square */}
         <div className="absolute inset-0 md:hidden">
-          <Image
-            src={event.image}
-            alt={event.title}
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-            quality={75}
-          />
+          {event.image && (
+            <Image
+              src={event.image}
+              alt={event.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 0px"
+              quality={75}
+            />
+          )}
         </div>
         {/* Desktop Image - Banner */}
         <div className="absolute inset-0 hidden md:block">
-          <Image
-            src={event.bannerImage || event.image}
-            alt={event.title}
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-            quality={75}
-          />
+          {event.bannerImage && (
+            <Image
+              src={event.bannerImage}
+              alt={event.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="(min-width: 768px) 100vw, 0px"
+              quality={75}
+            />
+          )}
         </div>
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />

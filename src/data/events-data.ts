@@ -39,7 +39,7 @@ export async function getUpcomingEvents(): Promise<Event[]> {
   }
 }
 
-// Función para obtener eventos pasados (WordPress + fallback)
+// Función para obtener eventos pasados inicial (solo los primeros 12)
 export async function getPastEvents(): Promise<Event[]> {
   // Si tenemos cache válido, retornarlo
   if (pastEventsCache && isCacheValid()) {
@@ -50,7 +50,7 @@ export async function getPastEvents(): Promise<Event[]> {
     // Clear cache for debugging - but don't reset timestamp yet
     pastEventsCache = null;
     
-    const tribeEvents = await tribeEventsAdapter.getPastEvents(50);
+    const tribeEvents = await tribeEventsAdapter.getPastEvents(12); // Reduced from 50 to 12
     
     // Ensure we have a valid array before caching
     if (Array.isArray(tribeEvents)) {
@@ -67,6 +67,24 @@ export async function getPastEvents(): Promise<Event[]> {
     console.error('❌ Error loading Tribe Events past events:', error);
     pastEventsCache = [];
     cacheTimestamp = Date.now();
+    return [];
+  }
+}
+
+// Nueva función para cargar más eventos pasados
+export async function getPastEventsPage(page: number, pageSize: number = 12): Promise<Event[]> {
+  try {
+    const offset = (page - 1) * pageSize;
+    const tribeEvents = await tribeEventsAdapter.getPastEventsPage(offset, pageSize);
+    
+    if (Array.isArray(tribeEvents)) {
+      return tribeEvents;
+    } else {
+      console.warn('⚠️ getPastEventsPage: tribeEventsAdapter returned non-array:', typeof tribeEvents);
+      return [];
+    }
+  } catch (error) {
+    console.error('❌ Error loading paginated past events:', error);
     return [];
   }
 }

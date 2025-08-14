@@ -500,6 +500,50 @@ class WordPressAPI {
       return [];
     }
   }
+
+  // Nueva función para paginación de eventos pasados
+  async getTribePastEventsPage(offset: number, limit: number = 12): Promise<TribeEvent[]> {
+    try {
+      const now = new Date();
+      const isoDate = now.toISOString();
+      
+      // Calculate the page number for the API call
+      const page = Math.floor(offset / limit) + 1;
+      
+      let params = {
+        per_page: limit,
+        page: page,
+        ends_before: isoDate,
+        orderby: 'start_date' as const,
+        order: 'desc' as const
+      };
+      
+      let result = await this.getTribeEvents(params);
+      
+      // If ISO format didn't work, try DD/MM/YYYY format
+      if (!Array.isArray(result) || result.length === 0) {
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const ddmmyyyyDate = `${day}/${month}/${year}`;
+        
+        params = {
+          per_page: limit,
+          page: page,
+          ends_before: ddmmyyyyDate,
+          orderby: 'start_date' as const,
+          order: 'desc' as const
+        };
+        
+        result = await this.getTribeEvents(params);
+      }
+      
+      return Array.isArray(result) ? result : [];
+    } catch (error) {
+      console.error('❌ Error in getTribePastEventsPage:', error);
+      return [];
+    }
+  }
 }
 
 export const wordpressAPI = new WordPressAPI();
