@@ -10,8 +10,11 @@ interface EventsGridProps {
   pastEvents: Event[];
 }
 
-export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridProps) {
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+export default function EventsGrid({
+  upcomingEvents,
+  pastEvents,
+}: EventsGridProps) {
+  const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 12;
   const [allPastEvents, setAllPastEvents] = useState<Event[]>(pastEvents);
@@ -19,12 +22,13 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
   const [hasMorePastEvents, setHasMorePastEvents] = useState(true);
 
   // Debug logs
-  console.log('EventsGrid - upcomingEvents:', upcomingEvents?.length || 0);
-  console.log('EventsGrid - pastEvents:', pastEvents?.length || 0);
+  console.log("EventsGrid - upcomingEvents:", upcomingEvents?.length || 0);
+  console.log("EventsGrid - pastEvents:", pastEvents?.length || 0);
 
   // Get current events based on active tab
-  const currentEvents = activeTab === 'upcoming' ? upcomingEvents : allPastEvents;
-  
+  const currentEvents =
+    activeTab === "upcoming" ? upcomingEvents : allPastEvents;
+
   // Calculate pagination
   const totalPages = Math.ceil(currentEvents.length / eventsPerPage);
   const startIndex = (currentPage - 1) * eventsPerPage;
@@ -35,7 +39,7 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
       // Scroll to top smoothly
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -43,44 +47,46 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
       // Scroll to top smoothly
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Reset to first page when switching tabs
-  const handleTabSwitch = (tab: 'upcoming' | 'past') => {
+  const handleTabSwitch = (tab: "upcoming" | "past") => {
     setActiveTab(tab);
     setCurrentPage(1);
   };
 
   // Load more past events
   const loadMorePastEvents = async () => {
-    if (isLoadingMore || !hasMorePastEvents || activeTab !== 'past') return;
-    
+    if (isLoadingMore || !hasMorePastEvents || activeTab !== "past") return;
+
     setIsLoadingMore(true);
     try {
       const nextPage = Math.floor(allPastEvents.length / 12) + 1;
-      const response = await fetch(`/api/events/past?page=${nextPage}&limit=12`);
-      
+      const response = await fetch(
+        `/api/events/past?page=${nextPage}&limit=12`
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to fetch events');
+        throw new Error("Failed to fetch events");
       }
-      
+
       const data = await response.json();
-      
+
       if (data.events.length === 0) {
         setHasMorePastEvents(false);
       } else {
-        setAllPastEvents(prev => [...prev, ...data.events]);
+        setAllPastEvents((prev) => [...prev, ...data.events]);
         setHasMorePastEvents(data.hasMore);
       }
     } catch (error) {
-      console.error('Error loading more past events:', error);
+      console.error("Error loading more past events:", error);
     } finally {
       setIsLoadingMore(false);
     }
@@ -92,22 +98,22 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
       <div className="flex justify-start items-center mb-12 border-b border-zinc-800">
         <div className="flex gap-8">
           <button
-            onClick={() => handleTabSwitch('upcoming')}
+            onClick={() => handleTabSwitch("upcoming")}
             className={`pb-6 px-2 text-sm font-bold transition-all duration-300 tracking-[0.2em] ${
-              activeTab === 'upcoming'
-                ? 'text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text border-b-2 border-indigo-400'
-                : 'text-zinc-500 hover:text-zinc-300'
+              activeTab === "upcoming"
+                ? "text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text border-b-2 border-indigo-400"
+                : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
             PRÓXIMOS ({upcomingEvents.length})
           </button>
-          
+
           <button
-            onClick={() => handleTabSwitch('past')}
+            onClick={() => handleTabSwitch("past")}
             className={`pb-6 px-2 text-sm font-bold transition-all duration-300 tracking-[0.2em] ${
-              activeTab === 'past'
-                ? 'text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text border-b-2 border-indigo-400'
-                : 'text-zinc-500 hover:text-zinc-300'
+              activeTab === "past"
+                ? "text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text border-b-2 border-indigo-400"
+                : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
             PASADOS ({allPastEvents.length})
@@ -120,28 +126,27 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
         <div className="text-center py-20">
           <div className="max-w-md mx-auto">
             <div className="w-16 h-16 rounded-full bg-gradient-to-r from-indigo-400/20 to-purple-400/20 flex items-center justify-center border border-indigo-400/20 mx-auto mb-6">
-              <svg 
-                className="w-8 h-8 text-indigo-400" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className="w-8 h-8 text-indigo-400"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-6 4v4m6-4v4m-8-8h12l-1 12H7L6 7z" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-6 4v4m6-4v4m-8-8h12l-1 12H7L6 7z"
                 />
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">
-              No hay eventos {activeTab === 'upcoming' ? 'próximos' : 'pasados'}
+              No hay eventos {activeTab === "upcoming" ? "próximos" : "pasados"}
             </h3>
             <p className="text-zinc-400 leading-relaxed">
-              {activeTab === 'upcoming' 
-                ? 'Estamos preparando increíbles eventos para ti. ¡Regresa pronto!'
-                : 'Aún no hay eventos pasados registrados.'
-              }
+              {activeTab === "upcoming"
+                ? "Estamos preparando increíbles eventos para ti. ¡Regresa pronto!"
+                : "Aún no hay eventos pasados registrados."}
             </p>
           </div>
         </div>
@@ -155,7 +160,7 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
           </div>
 
           {/* Progressive Loading for Past Events */}
-          {activeTab === 'past' && hasMorePastEvents && (
+          {activeTab === "past" && hasMorePastEvents && (
             <div className="text-center mt-8">
               <button
                 onClick={loadMorePastEvents}
@@ -168,18 +173,20 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
                     Cargando...
                   </>
                 ) : (
-                  'Cargar Más Eventos'
+                  "Cargar Más Eventos"
                 )}
               </button>
             </div>
           )}
 
           {/* Traditional Pagination for Upcoming Events */}
-          {activeTab === 'upcoming' && totalPages > 1 && (
+          {activeTab === "upcoming" && totalPages > 1 && (
             <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
               {/* Page Info */}
               <div className="text-zinc-400 text-sm">
-                Mostrando {startIndex + 1}-{Math.min(endIndex, currentEvents.length)} de {currentEvents.length} eventos
+                Mostrando {startIndex + 1}-
+                {Math.min(endIndex, currentEvents.length)} de{" "}
+                {currentEvents.length} eventos
               </div>
 
               {/* Pagination Controls */}
@@ -194,32 +201,35 @@ export default function EventsGrid({ upcomingEvents, pastEvents }: EventsGridPro
 
                 {/* Page Numbers */}
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
-                    let page;
-                    if (totalPages <= 5) {
-                      page = index + 1;
-                    } else if (currentPage <= 3) {
-                      page = index + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      page = totalPages - 4 + index;
-                    } else {
-                      page = currentPage - 2 + index;
-                    }
+                  {Array.from(
+                    { length: Math.min(totalPages, 5) },
+                    (_, index) => {
+                      let page;
+                      if (totalPages <= 5) {
+                        page = index + 1;
+                      } else if (currentPage <= 3) {
+                        page = index + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        page = totalPages - 4 + index;
+                      } else {
+                        page = currentPage - 2 + index;
+                      }
 
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => goToPage(page)}
-                        className={`w-8 h-8 rounded-full text-sm font-medium transition-all duration-300 ${
-                          currentPage === page
-                            ? 'bg-gradient-to-r from-indigo-400 to-purple-400 text-white'
-                            : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => goToPage(page)}
+                          className={`w-8 h-8 rounded-full text-sm font-medium transition-all duration-300 ${
+                            currentPage === page
+                              ? "bg-gradient-to-r from-indigo-400 to-purple-400 text-white"
+                              : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    }
+                  )}
                 </div>
 
                 <button
