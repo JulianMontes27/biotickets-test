@@ -8,10 +8,7 @@ interface SafeImageProps extends Omit<ImageProps, "src" | "onError"> {
   fallbackSrc?: string;
 }
 
-const DEFAULT_FALLBACK = null;
-
 export default function SafeImage({ src, alt, ...props }: SafeImageProps) {
-  const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
 
   const handleError = () => {
@@ -21,14 +18,14 @@ export default function SafeImage({ src, alt, ...props }: SafeImageProps) {
   };
 
   // If there's no valid image source, don't render anything
-  if (!imgSrc) {
+  if (!src) {
     return null;
   }
 
   return (
     <Image
       {...props}
-      src={imgSrc}
+      src={src}
       alt={alt}
       onError={handleError}
       unoptimized={hasError}

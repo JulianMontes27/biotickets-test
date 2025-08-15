@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Event } from "@/types";
@@ -13,7 +13,18 @@ interface EventsCarouselProps {
 
 export default function EventsCarousel({ upcomingEvents, pastEvents }: EventsCarouselProps) {
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+  const [isMobile, setIsMobile] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640); // sm breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -134,21 +145,26 @@ export default function EventsCarousel({ upcomingEvents, pastEvents }: EventsCar
                 scrollSnapType: 'x mandatory'
               }}
             >
-              {/* Create pages of 9 events each (3x3 grid) */}
-              {Array.from({ length: Math.ceil(currentEvents.length / 9) }, (_, pageIndex) => {
-                const pageEvents = currentEvents.slice(pageIndex * 9, (pageIndex + 1) * 9);
-                return (
-                  <div 
-                    key={pageIndex}
-                    className="flex-shrink-0 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-                    style={{ scrollSnapAlign: 'start' }}
-                  >
-                    {pageEvents.map((event) => (
-                      <EventCard key={event.id} event={event} />
-                    ))}
-                  </div>
-                );
-              })}
+              {/* Create pages with responsive event counts */}
+              {(() => {
+                const eventsPerPage = isMobile ? 3 : 9; // 3 for mobile, 9 for larger screens
+                const totalPages = Math.ceil(currentEvents.length / eventsPerPage);
+                
+                return Array.from({ length: totalPages }, (_, pageIndex) => {
+                  const pageEvents = currentEvents.slice(pageIndex * eventsPerPage, (pageIndex + 1) * eventsPerPage);
+                  return (
+                    <div 
+                      key={pageIndex}
+                      className="flex-shrink-0 w-full flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+                      style={{ scrollSnapAlign: 'start' }}
+                    >
+                      {pageEvents.map((event) => (
+                        <EventCard key={event.id} event={event} />
+                      ))}
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </>
         )}

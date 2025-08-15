@@ -153,7 +153,7 @@ export default function EventsGrid({
       ) : (
         <>
           {/* Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 mb-12">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 mb-12">
             {paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}

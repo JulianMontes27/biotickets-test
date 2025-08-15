@@ -1,3 +1,5 @@
+import { isEventPast } from '@/lib/date-utils';
+
 const WORDPRESS_API_BASE = process.env.WORDPRESS_API_BASE || 'https://www.biotickets.com/wp-json/wp/v2';
 const TRIBE_EVENTS_API_BASE = process.env.TRIBE_API_BASE || 'https://www.biotickets.com/wp-json/tribe/events/v1';
 
@@ -232,7 +234,7 @@ export interface TribeEvent {
 class WordPressAPI {
   private async fetchWithErrorHandling<T>(url: string): Promise<T> {
     const maxRetries = 3;
-    let lastError: Error;
+    let lastError: Error | null = null;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -278,7 +280,7 @@ class WordPressAPI {
     }
 
     // Return empty array or default value instead of throwing
-    console.error(`All ${maxRetries} attempts failed for URL: ${url}`);
+    console.error(`All ${maxRetries} attempts failed for URL: ${url}`, lastError);
     return [] as unknown as T;
   }
 
@@ -483,11 +485,9 @@ class WordPressAPI {
         });
         
         if (Array.isArray(allEventsResult)) {
-          // Filter for past events client-side
-          const nowTimestamp = now.getTime();
+          // Filter for past events client-side using consistent date handling
           const pastEvents = allEventsResult.filter(event => {
-            const eventEndDate = new Date(event.end_date);
-            return eventEndDate.getTime() < nowTimestamp;
+            return isEventPast(event.end_date);
           }).slice(0, limit);
           
           return pastEvents;

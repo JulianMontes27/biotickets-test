@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Event } from "@/types";
@@ -12,6 +12,12 @@ interface EventCardProps {
 export default function EventCard({ event }: EventCardProps) {
   const [hoveredCard, setHoveredCard] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+
+  // Prevent hydration mismatch by only rendering interactive elements after hydration
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Función para decodificar entidades HTML
   const decodeHtmlEntities = (text: string): string => {
@@ -81,6 +87,22 @@ export default function EventCard({ event }: EventCardProps) {
   const linkTarget = isPerroNegro ? "_blank" : undefined;
   const linkRel = isPerroNegro ? "noopener noreferrer" : undefined;
 
+  // Show loading state during hydration to prevent flash
+  if (!isHydrated) {
+    return (
+      <div className="group relative bg-zinc-900 overflow-hidden rounded-2xl border border-zinc-800 transition-all duration-500 flex flex-col" style={{ height: "480px" }}>
+        {/* Loading skeleton */}
+        <div className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl animate-pulse" style={{ width: "100%", height: "360px" }}>
+          <div className="absolute inset-0 bg-zinc-800" />
+        </div>
+        <div className="p-4 bg-black/40 flex-1 flex flex-col justify-start min-h-0" style={{ height: "120px" }}>
+          <div className="bg-zinc-700 h-6 rounded animate-pulse mb-2" />
+          <div className="bg-zinc-700 h-4 rounded animate-pulse w-3/4" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {event.status === "upcoming" ? (
@@ -100,7 +122,7 @@ export default function EventCard({ event }: EventCardProps) {
             }}
           >
             {/* Event Image */}
-            {event.image && !imageError && (
+            {event.image && !imageError ? (
               <div
                 className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl"
                 style={{ width: "100%", height: "360px" }}
@@ -119,6 +141,31 @@ export default function EventCard({ event }: EventCardProps) {
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+                {/* Date Badge */}
+                <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-indigo-400/20">
+                  <div className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    {formatDate(event.date).split(" ")[1] || "1"}
+                  </div>
+                  <div className="text-[10px] font-medium text-zinc-400 leading-tight">
+                    {formatDate(event.date).split(" ")[0] || "ENE"}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl flex items-center justify-center"
+                style={{ width: "100%", height: "360px" }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                
+                {/* No Image Icon */}
+                <div className="flex flex-col items-center justify-center text-zinc-600">
+                  <svg className="w-16 h-16 mb-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                  </svg>
+                  <span className="text-xs text-zinc-500">Sin imagen</span>
+                </div>
 
                 {/* Date Badge */}
                 <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-indigo-400/20">
@@ -159,7 +206,7 @@ export default function EventCard({ event }: EventCardProps) {
           }}
         >
           {/* Event Image */}
-          {event.image && !imageError && (
+          {event.image && !imageError ? (
             <div
               className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl"
               style={{ width: "100%", height: "360px" }}
@@ -178,6 +225,31 @@ export default function EventCard({ event }: EventCardProps) {
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+              {/* Date Badge */}
+              <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-indigo-400/20">
+                <div className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                  {formatDate(event.date).split(" ")[1] || "1"}
+                </div>
+                <div className="text-[10px] font-medium text-zinc-400 leading-tight">
+                  {formatDate(event.date).split(" ")[0] || "ENE"}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="relative overflow-hidden bg-black flex-shrink-0 rounded-t-2xl flex items-center justify-center"
+              style={{ width: "100%", height: "360px" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              
+              {/* No Image Icon */}
+              <div className="flex flex-col items-center justify-center text-zinc-600">
+                <svg className="w-16 h-16 mb-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                </svg>
+                <span className="text-xs text-zinc-500">Sin imagen</span>
+              </div>
 
               {/* Date Badge */}
               <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-3 py-2 text-center min-w-[60px] rounded-xl shadow-lg border border-indigo-400/20">

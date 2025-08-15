@@ -1,5 +1,6 @@
 import { Event } from "@/types";
 import { TribeEvent, wordpressAPI } from "./wordpress-api";
+import { getEventStatus } from "@/lib/date-utils";
 
 export class TribeEventsAdapter {
   private stripHtml(html: string): string {
@@ -300,9 +301,8 @@ export class TribeEventsAdapter {
 
   convertToEvent(tribeEvent: TribeEvent): Event {
     // Determinar si es evento pasado o próximo basado en fecha de fin
-    const eventEndDate = new Date(tribeEvent.end_date);
-    const now = new Date();
-    const status = eventEndDate > now ? "upcoming" : "past";
+    // Use consistent date handling to prevent hydration mismatches
+    const status = getEventStatus(tribeEvent.end_date);
 
     // Extraer imagen de banner desde la descripción
     const bannerImage = this.getBannerImageFromDescription(

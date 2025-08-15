@@ -1,5 +1,6 @@
 import { Event } from '@/types';
 import { WordPressEvent, wordpressAPI } from './wordpress-api';
+import { getEventStatus } from '@/lib/date-utils';
 
 export class EventsAdapter {
   private stripHtml(html: string): string {
@@ -229,11 +230,12 @@ export class EventsAdapter {
     const finalEventDate = realEventDate || startDate;
     
     // Determinar si es evento pasado o próximo
-    const eventDate = new Date(finalEventDate);
-    const now = new Date();
-    const status = eventDate > now ? 'upcoming' : 'past';
+    // Use consistent date handling to prevent hydration mismatches
+    const status = getEventStatus(finalEventDate);
     
     // Debug logging
+    const eventDate = new Date(finalEventDate);
+    const now = new Date();
     console.log(`📅 Event "${wpEvent.title.rendered}":`, {
       originalStartDate: startDate,
       extractedDate: realEventDate,
