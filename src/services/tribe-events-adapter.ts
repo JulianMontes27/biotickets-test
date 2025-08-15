@@ -6,6 +6,23 @@ export class TribeEventsAdapter {
     // Primero decodificar entidades HTML
     let decodedHtml = this.decodeHtmlEntities(html);
 
+    // Remover contenido CSS y Elementor antes de procesar HTML
+    decodedHtml = decodedHtml
+      // Remover bloques de estilo completos
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+      // Remover comentarios CSS (incluye Elementor)
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      // Remover shortcodes de WordPress
+      .replace(/\[[\s\S]*?\]/g, "")
+      // Remover atributos de estilo inline
+      .replace(/\sstyle\s*=\s*["'][^"']*["']/gi, "")
+      // Remover atributos de clase de Elementor
+      .replace(/\sclass\s*=\s*["'][^"']*elementor[^"']*["']/gi, "")
+      // Remover divs vacíos o solo con espacios/saltos
+      .replace(/<div[^>]*>\s*<\/div>/gi, "")
+      // Remover spans vacíos
+      .replace(/<span[^>]*>\s*<\/span>/gi, "");
+
     // Convertir tags HTML a saltos de línea antes de quitarlos
     decodedHtml = decodedHtml
       .replace(/<br\s*\/?>/gi, "\n") // <br> -> salto de línea
@@ -20,6 +37,20 @@ export class TribeEventsAdapter {
       .replace(/\n+$/, "") // quitar saltos al final
       .replace(/\n\s*COMPRAR\s*$/i, "") // quitar "COMPRAR" al final
       .replace(/COMPRAR\s*$/i, "") // quitar "COMPRAR" al final sin salto
+      .trim();
+
+    // Final cleanup para contenido CSS residual
+    decodedHtml = decodedHtml
+      // Remover líneas que parezcan CSS (contienen : y ;)
+      .replace(/^.*[{;}].*$/gm, "")
+      // Remover líneas que empiecen con puntos o # (selectores CSS)
+      .replace(/^[.#][^\n]*$/gm, "")
+      // Remover líneas solo con caracteres CSS especiales
+      .replace(/^[{}();,.*#@\-\s]*$/gm, "")
+      // Limpiar saltos múltiples nuevamente
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/^\n+/, "")
+      .replace(/\n+$/, "")
       .trim();
 
     return decodedHtml;

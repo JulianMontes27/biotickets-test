@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Event } from "@/types";
-import EventsGridCard from "./events-grid-card";
+import EventCard from "./event-card";
 
 interface EventsGridProps {
   upcomingEvents: Event[];
@@ -155,7 +155,7 @@ export default function EventsGrid({
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 mb-12">
             {paginatedEvents.map((event) => (
-              <EventsGridCard key={event.id} event={event} />
+              <EventCard key={event.id} event={event} />
             ))}
           </div>
 
